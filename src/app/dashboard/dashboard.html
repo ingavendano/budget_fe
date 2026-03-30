@@ -1,0 +1,74 @@
+<main class="al-main-content">
+  <header class="al-page-header">
+    <div class="al-header-left">
+      <h2 class="al-page-title">Visión general financiera</h2>
+      <p class="al-page-subtitle">Gestiona y audita tus gastos, créditos y personales.</p>
+    </div>
+    <div class="al-header-right">
+      <div class="al-period-selectors">
+        <select class="al-select-mini">
+          <option>{{ currentMonth | titlecase }}</option>
+        </select>
+        <select class="al-select-mini">
+          <option>{{ currentYear }}</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="al-content-scroll">
+    <!-- Fila 1: Métricas con deltas -->
+    <app-metrics-summary
+      [year]="selectedYear()"
+      [month]="selectedMonth()"
+    />
+
+    <!-- Charts & Breakdown -->
+    <div class="dashboard-grid">
+      <!-- Real-Time Cashflow Chart -->
+      <app-cashflow-chart
+        [year]="selectedYear()"
+        [month]="selectedMonth()"
+      />
+
+      <!-- Alert Panel -->
+      <app-alert-panel
+        [year]="selectedYear()"
+        [month]="selectedMonth()"
+      />
+    </div>
+
+    <!-- Bottom Section: Categories & Financial Health -->
+    <div class="dashboard-bottom-grid">
+      
+      <!-- Category Breakdown -->
+      <div class="al-section-card breakdown-container" style="margin-bottom: 0;">
+        <h3 class="al-section-title" style="margin-bottom: 24px;">Principales categorías de gasto</h3>
+
+        <div class="category-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;">
+          <div class="category-item" *ngFor="let cat of stats()?.expensesByCategory">
+            <div class="cat-row">
+              <div class="cat-info">
+                <div class="cat-icon-frame" [style.background-color]="cat.color + '20'">
+                  <span class="material-symbols-outlined" [style.color]="cat.color">{{ cat.icon }}</span>
+                </div>
+                <span class="cat-name">{{ cat.name }}</span>
+              </div>
+              <span class="cat-amount">-{{ cat.total | number:'1.2-2' }}</span>
+            </div>
+            <div class="cat-progress-bg">
+              <div class="cat-progress-bar" [style.width.%]="cat.percentage" [style.background-color]="cat.color"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Health -->
+      <app-financial-health
+        [year]="selectedYear()"
+        [month]="selectedMonth()"
+      />
+
+    </div>
+  </div>
+</main>

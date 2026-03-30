@@ -1,0 +1,228 @@
+<main class="al-main-content">
+    <header class="al-page-header">
+      <div class="al-header-left">
+        <h2 class="al-page-title">Registro de Ingresos</h2>
+        <p class="al-page-subtitle">Registra y audita tus ingresos.</p>
+      </div>
+      <div class="al-header-right">
+        <div class="al-user-profile">
+          <div class="al-user-info">
+            <span class="al-user-name">Adrián Mendoza</span>
+            <span class="al-user-tier">Nivel Premium</span>
+          </div>
+          <div class="al-user-avatar">AM</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="al-content-scroll">
+      <!-- Top Section: Bento Grid -->
+      <div class="al-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px; margin-bottom: 32px;">
+
+        <!-- Registration Form -->
+        <div class="al-section-card">
+          <div class="al-section-header-row">
+            <div class="al-section-title-group">
+              <span class="al-section-icon material-symbols-outlined"
+                style="font-variation-settings: 'FILL' 1;">add_circle</span>
+              <h3 class="al-section-title">Registrar nuevo ingreso</h3>
+            </div>
+          </div>
+
+          <div class="al-form-grid" style="grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="al-field-group">
+              <label class="al-label">CATEGORÍA</label>
+              <select class="al-input al-select" [ngModel]="selectedCategoryId()"
+                (ngModelChange)="selectedCategoryId.set($event)">
+                <option [ngValue]="null">Selecciona Categoría</option>
+                <option *ngFor="let cat of incomeCategories()" [value]="cat.id">
+                  {{cat.name}}
+                </option>
+              </select>
+            </div>
+
+            <div class="al-field-group">
+              <label class="al-label">MONTO BRUTO</label>
+              <div class="al-input-wrapper">
+                <span class="al-input-prefix">$</span>
+                <input class="al-input al-amount-input" type="text" [ngModel]="amount()"
+                  (ngModelChange)="amount.set($event)" mask="separator.2" thousandSeparator=","
+                  [dropSpecialCharacters]="true" placeholder="0.00">
+              </div>
+            </div>
+          </div>
+
+          <div class="al-field-group" style="margin-top: 16px;">
+            <label class="al-label">DESCRIPCIÓN (OPCIONAL)</label>
+            <input class="al-input" type="text" [ngModel]="description()" (ngModelChange)="description.set($event)"
+              placeholder="Ej: Pago de planilla mensual">
+          </div>
+
+          <!-- Calculated Taxes (Visible when breakdown exists) -->
+          <div class="al-calculation-panel" *ngIf="currentBreakdown(); let cb"
+            style="margin-top:24px; background: var(--al-surface-low); padding: 16px; border-radius: 12px;">
+            <div class="al-calc-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+              <span class="material-symbols-outlined text-secondary" style="font-size: 16px;">info</span>
+              <span class="text-xs font-bold uppercase tracking-widest text-secondary">IMPUESTOS CALCULADOS</span>
+            </div>
+
+            <div class="al-calc-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+              <div class="al-calc-item" *ngFor="let dec of cb.deductions">
+                <span class="al-calc-label"
+                  style="display: block; font-size: 10px; color: var(--al-on-surface-variant);">{{dec.name}}</span>
+                <span class="al-calc-value" style="font-weight: 600; color: var(--al-error);">-{{dec.amount |
+                  currency}}</span>
+              </div>
+              <div class="al-calc-item" *ngIf="cb.deductions.length === 0">
+                <span class="al-calc-label"
+                  style="display: block; font-size: 10px; color: var(--al-on-surface-variant);">Sin Deducciones</span>
+                <span class="al-calc-value" style="font-weight: 600;">$0.00</span>
+              </div>
+              <!-- Net Total -->
+              <div class="al-calc-item" style="border-left: 1px solid var(--al-outline-variant); padding-left: 16px;">
+                <span class="al-calc-label"
+                  style="display: block; font-size: 10px; font-weight: bold; color: var(--al-primary);">Total
+                  Neto</span>
+                <span class="al-calc-value"
+                  style="font-weight: 800; font-size: 18px; color: var(--al-primary);">{{cb.net | currency}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="al-section-footer" style="margin-top: 24px;">
+            <button class="al-btn-primary" (click)="saveIncome()" [disabled]="amount() <= 0 || !selectedCategoryId()">
+              <span class="material-symbols-outlined">save</span>
+              <span>Guardar Ingreso</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Monthly Summary Card -->
+        <div class="al-summary-card"
+          style="color: white; display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="al-summary-content">
+            <h3 class="al-summary-title">Resumen mensual</h3>
+            <p class="al-summary-desc" style="opacity: 0.8; font-size: 14px; margin-top: 8px;">
+              Tus ingresos acumulados este mes representan el progreso hacia tu meta de ahorro definida.
+            </p>
+
+            <div class="al-summary-metrics" style="margin-top: 24px;">
+              <div class="al-summary-item"
+                style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px;">
+                <span class="al-summary-sublabel" style="font-size: 10px; opacity: 0.7; font-weight: 800; letter-spacing: 0.05em;">META DE AHORRO</span>
+                <span class="al-summary-value" style="font-size: 20px; font-weight: 800;">{{monthlyBudget |
+                  currency}}</span>
+              </div>
+
+              <div class="al-progress-container"
+                style="background: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                <div class="al-progress-bar" [style.width.%]="budgetPercentage()"
+                  style="background: var(--al-tertiary-fixed); height: 100%; transition: width 0.5s ease;"></div>
+              </div>
+
+              <div class="al-summary-item" style="display: flex; justify-content: space-between; margin-top: 12px;">
+                <span style="font-size: 10px; opacity: 0.7; font-weight: 800; letter-spacing: 0.05em;">ACUMULADO ACTUAL</span>
+                <span style="font-weight: 700;">{{totalMonthlyIncome() | currency}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Decorative element -->
+          <div class="al-summary-decoration"
+            style="position: absolute; bottom: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.05); border-radius: 50%; filter: blur(40px);">
+          </div>
+        </div>
+      </div>
+
+      <!-- History Table -->
+      <div class="al-section-card">
+        <div class="al-section-header-row">
+          <div class="al-section-title-group">
+            <span class="al-section-icon material-symbols-outlined">history</span>
+            <h3 class="al-section-title">Historial de ingresos</h3>
+          </div>
+          <div class="al-section-actions">
+            <button class="al-btn-secondary" (click)="printHistory()" title="Imprimir Historial">
+              <span class="material-symbols-outlined">print</span>
+              <span>Imprimir</span>
+            </button>
+            <button class="al-btn-secondary" (click)="exportToPdf()" title="Exportar a PDF">
+              <span class="material-symbols-outlined">picture_as_pdf</span>
+              <span>PDF</span>
+            </button>
+            <button class="al-btn-secondary" (click)="exportToExcel()" title="Exportar a Excel">
+              <span class="material-symbols-outlined">description</span>
+              <span>Excel</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="al-table-container">
+          <div class="al-table-header">
+            <span class="al-th" style="width:120px">Fecha</span>
+            <span class="al-th" style="flex:1">Categoría</span>
+            <span class="al-th" style="flex:1">Descripción</span>
+            <span class="al-th" style="width:140px; text-align:right">Monto Bruto</span>
+            <span class="al-th" style="width:140px; text-align:right">Deducciones</span>
+            <span class="al-th" style="width:140px; text-align:right">Monto Neto</span>
+            <span class="al-th" style="width:100px; text-align:center">Acciones</span>
+          </div>
+
+          <div class="al-table-body" style="max-height: 450px; overflow-y: auto;">
+            <div class="al-table-row" *ngFor="let inc of incomes()">
+              <div class="al-td" style="width:120px">
+                <span class="al-date-text">{{inc.entryDate | date:'dd MMM yyyy'}}</span>
+              </div>
+              <div class="al-td" style="flex:1">
+                <span class="al-cat-icon material-symbols-outlined" [style.color]="inc.category.color">
+                  {{inc.category.icon}}
+                </span>
+                <span class="al-cat-name" style="margin-left:8px">{{inc.category.name}}</span>
+              </div>
+              <div class="al-td" style="flex:1">
+                <span class="al-desc-subtext">{{inc.description}}</span>
+              </div>
+              <div class="al-td" style="width:140px; justify-content: flex-end;">
+                <span class="al-amount-text">{{inc.grossAmount | currency}}</span>
+              </div>
+              <div class="al-td" style="width:140px; justify-content: flex-end;">
+                <span class="al-amount-text" style="color: var(--al-error)">-{{inc.totalDeductions | currency}}</span>
+              </div>
+              <div class="al-td" style="width:140px; justify-content: flex-end;">
+                <span class="al-amount-text" style="color: var(--al-primary); font-weight: 700;">{{inc.netAmount |
+                  currency}}</span>
+              </div>
+              <div class="al-td" style="width:100px; justify-content: center; gap: 8px;">
+                <button class="al-icon-btn delete" (click)="deleteIncome(inc.id)" title="Eliminar">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="incomes().length === 0" class="al-empty-state">
+              <span class="material-symbols-outlined">info</span>
+              <p>No se han registrado ingresos este mes.</p>
+            </div>
+          </div>
+
+          <!-- Totalizer Footer -->
+          <div class="al-table-footer" *ngIf="incomes().length > 0" 
+               style="display: flex; align-items: center; padding: 16px; background: var(--al-surface-container-low); border-top: 2px solid var(--al-surface-container-high); border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+            <div style="width:120px"></div>
+            <div style="flex:1; font-weight: 800; color: var(--al-on-surface); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em;">Total Mensual</div>
+            <div style="flex:1"></div>
+            <div style="width:140px; text-align:right; font-weight: 800; color: var(--al-on-surface); font-size: 15px;">
+              {{totalMonthlyIncome() | currency}}
+            </div>
+            <div style="width:140px; text-align:right; font-weight: 700; color: var(--al-error); font-size: 14px;">
+              -{{(totalMonthlyIncome() - totalMonthlyNetIncome()) | currency}}
+            </div>
+            <div style="width:140px; text-align:right; font-weight: 800; color: var(--al-primary); font-size: 18px;">
+              {{totalMonthlyNetIncome() | currency}}
+            </div>
+            <div style="width:100px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>

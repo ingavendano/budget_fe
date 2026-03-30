@@ -1,0 +1,330 @@
+/* General Layout */
+.al-main-content {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header Styles */
+.al-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.al-page-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.al-page-subtitle {
+  color: #73726c;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+/* Summary Cards */
+.al-summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.al-stat-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  transition: transform 0.2s;
+}
+
+.al-stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.al-stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9c9a92;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.al-stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+/* Strategy Selector */
+.al-strategy-panel {
+  background: #fdfdfc;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+/* Debt Cards Grid */
+.al-debts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 32px;
+}
+
+/* Individual Debt Card */
+.al-goal-card {
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 28px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  min-height: 380px;
+}
+
+.al-goal-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+  border-color: var(--al-primary);
+}
+
+.al-goal-card--target {
+  background: #fdfafd !important;
+  border: 2px solid var(--al-primary) !important;
+}
+
+.al-goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.al-goal-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.al-goal-desc {
+  font-size: 14px;
+  color: #73726c;
+  margin: 4px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Stats inside Card */
+.al-debt-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 12px 0 28px;
+}
+
+.al-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.al-stat-item-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9c9a92;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.al-stat-item-value {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Progress Section */
+.al-progress-container {
+  margin-top: auto;
+  padding: 20px 0;
+}
+
+.al-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #9c9a92;
+  margin-bottom: 12px;
+}
+
+.al-progress-bar {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.al-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--al-primary);
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.al-progress-footer {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #73726c;
+}
+
+/* Actions Area */
+.al-card-footer {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+.full-width {
+  flex: 1;
+}
+
+.al-btn-light {
+  background: #fdfafd;
+  color: var(--al-primary);
+  border: 1px solid rgba(138, 43, 226, 0.1);
+  padding: 12px 24px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.al-btn-light:hover {
+  background: var(--al-primary);
+  color: #white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.15);
+}
+
+.al-btn-light i, .al-btn-light span {
+  font-size: 20px;
+}
+
+.al-icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+  color: #73726c;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.al-icon-btn:hover {
+  background: #f9f9f8;
+  color: #1a1a1a;
+  border-color: #ddd;
+}
+
+.al-icon-btn.danger:hover {
+  background: #ba1a1a10;
+  color: #ba1a1a;
+  border-color: #ba1a1a20;
+}
+
+/* Badge for Next target */
+.al-target-badge {
+  position: absolute;
+  top: -12px;
+  right: 28px;
+  background: var(--al-primary);
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.25);
+  z-index: 1;
+}
+
+/* Form Styling */
+.al-section-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.03);
+}
+
+.al-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #9c9a92;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.al-input {
+  width: 100%;
+  height: 48px;
+  background: #f9f9f8;
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 15px;
+  color: #1a1a1a;
+  transition: all 0.2s;
+}
+
+.al-input:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--al-primary);
+  box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.05);
+}
+
+/* Empty State */
+.al-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 0;
+  color: #9c9a92;
+}
+
+.al-empty-state h3 {
+  font-size: 20px;
+  color: #1a1a1a;
+  margin: 24px 0 8px;
+}

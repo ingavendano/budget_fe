@@ -1,0 +1,48 @@
+<div class="metrics-grid">
+
+  @if (loading()) {
+    @for (i of [1,2,3]; track i) {
+      <div class="metric-card metric-card--skeleton">
+        <div class="skeleton-header"></div>
+        <div class="skeleton-value"></div>
+        <div class="skeleton-footer"></div>
+      </div>
+    }
+  } @else if (error()) {
+    <div class="metrics-error">
+      <p>{{ error() }}</p>
+      <button (click)="fetchMetrics(year(), month())">Reintentar</button>
+    </div>
+  } @else {
+    @for (card of cards(); track card.label) {
+      <div class="metric-card" [className]="'metric-card metric-card--' + card.type">
+        <div class="metric-card__header">
+          <span class="metric-card__title">{{ card.label }}</span>
+          <div class="metric-card__icon-frame">
+            <span class="material-symbols-outlined">{{ card.icon }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card__body">
+          <span class="metric-card__value">
+            {{ (card.type === 'income' ? '+' : '') }}{{ card.value | number:'1.2-2' }}
+          </span>
+        </div>
+
+        <div class="metric-card__footer">
+          @let delta = getDelta(card.value, card.previousValue);
+          @if (delta !== null) {
+            <div class="delta-tag" [className]="'delta-tag ' + getDeltaClass(delta, card.type, card.value)">
+              <span class="material-symbols-outlined">{{ getDeltaIcon(delta) }}</span>
+              <span>{{ (delta > 0 ? '+' : '') }}{{ delta | number:'1.1-1' }}%</span>
+            </div>
+            <span class="metric-card__subtitle">vs mes anterior</span>
+          } @else {
+            <span class="metric-card__subtitle">Sin datos previos</span>
+          }
+        </div>
+      </div>
+    }
+  }
+
+</div>

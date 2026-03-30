@@ -1,3 +1,507 @@
-/* You can add global styles to this file, and also import other style files */
-
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import 'tailwindcss';
+
+:root {
+  --font-display: 'Manrope', sans-serif;
+  --font-primary: 'Inter', sans-serif;
+
+  /* Architectural Ledger - Premium Dark Teal (Stitch) */
+  --al-primary: #004b50;
+  --al-primary-container: #006066;
+  --al-on-primary: #ffffff;
+  --al-secondary: #4e6266;
+  --al-secondary-container: #d1e8ed;
+  --al-on-secondary-container: #002e33;
+  --al-tertiary: #00443c;
+  
+  /* Gradiente Premium Stitch */
+  --al-gradient-premium: linear-gradient(135deg, #014d52 0%, #003a3f 100%);
+
+  /* Surface Hierarchy */
+  --al-surface: #f8f9fa;
+  --al-surface-container-low: #f3f4f5;
+  --al-surface-container: #eeeff0;
+  --al-surface-container-high: #e8e9ea;
+  --al-surface-container-highest: #e1e3e4;
+  --al-surface-container-lowest: #ffffff;
+
+  /* Global States & Accents */
+  --al-on-surface: #1a1c1e;
+  --al-on-surface-variant: #545a5b; /* Darkened from #414849 for better contrast (WCAG AA) */
+  --al-outline: #6b7280; /* Standardized secondary text / outline color */
+  --al-outline-variant: #c0c8cc;
+  --al-error: #ba1a1a;
+  
+  /* Savings Semantic Color (Purple Option A) */
+  --al-savings: #7F77DD;
+  --al-on-savings: #ffffff;
+  
+  /* Shadows - Premium Ambient */
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  /* Legacy mappings */
+  --color-bg: var(--al-surface);
+  --color-card: var(--al-surface-container-lowest);
+  --color-text-main: var(--al-on-surface);
+  --color-text-muted: var(--al-on-surface-variant);
+  --color-primary: var(--al-primary);
+  --color-primary-hover: var(--al-primary-container);
+  --color-dark: var(--al-primary);
+  --color-header: var(--al-primary);
+  --color-border: var(--al-outline-variant);
+  --color-input-bg: var(--al-surface-container-highest);
+  --color-white: #ffffff;
+}
+
+/* ── THEME: ROYAL PURPLE ─────────────────────────────────── */
+[data-theme='PURPLE'] {
+  --al-primary: #4527a0;
+  --al-primary-container: #5e35b1;
+  --al-secondary-container: #ede7f6;
+  --al-on-secondary-container: #311b92;
+  --al-tertiary: #4a148c;
+  --al-gradient-premium: linear-gradient(135deg, #4527a0 0%, #311b92 100%);
+}
+
+/* ── THEME: SLATE MIDNIGHT ────────────────────────────────── */
+[data-theme='SLATE'] {
+  --al-primary: #37474f;
+  --al-primary-container: #455a64;
+  --al-secondary-container: #eceff1;
+  --al-on-secondary-container: #263238;
+  --al-tertiary: #212121;
+  --al-gradient-premium: linear-gradient(135deg, #37474f 0%, #263238 100%);
+}
+
+/* ── THEME: EMERALD FOREST ────────────────────────────────── */
+[data-theme='EMERALD'] {
+  --al-primary: #1b5e20;
+  --al-primary-container: #2e7d32;
+  --al-secondary-container: #e8f5e9;
+  --al-on-secondary-container: #1b5e20;
+  --al-tertiary: #004d40;
+  --al-gradient-premium: linear-gradient(135deg, #1b5e20 0%, #0a1c0d 100%);
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Base Form Styles */
+.budget-card {
+  background: var(--color-card);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+
+.budget-input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 14px;
+  background: var(--color-input-bg);
+  color: var(--color-text-main);
+  transition: all 0.2s;
+}
+
+.budget-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.budget-btn-primary {
+  height: 44px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 12px;
+  padding: 0 24px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.budget-btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.budget-btn-dark {
+  height: 44px;
+  background: var(--color-dark);
+  color: var(--color-white);
+  border: none;
+  border-radius: 12px;
+  padding: 0 24px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ============================================================
+   ARCHITECTURAL LEDGER — GLOBAL THEME
+   ============================================================ */
+
+/* Main Layout Shell */
+.al-config-container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--al-surface);
+  font-family: var(--font-primary);
+}
+
+/* Sidebar */
+.al-sidebar {
+  width: 280px;
+  background: var(--al-surface-container-lowest);
+  border-right: 1px solid var(--al-outline-variant);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 24px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.al-logo-section {
+  margin-bottom: 48px;
+  padding: 0 8px;
+}
+
+.al-logo-text {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--al-primary);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.al-logo-sub {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--al-on-surface-variant);
+  margin: 4px 0 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.al-nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.al-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: var(--al-on-surface-variant);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.al-nav-item:hover {
+  background: var(--al-surface-container-low);
+  color: var(--al-on-surface);
+}
+
+.al-nav-item.active {
+  background: var(--al-secondary-container);
+  color: var(--al-on-secondary-container);
+}
+
+.al-nav-item .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* Main Content Area */
+.al-main-content {
+  flex: 1;
+  padding: 48px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.al-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 48px;
+}
+
+.al-page-title {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--al-on-surface);
+  letter-spacing: -0.5px;
+  margin: 0 0 8px;
+}
+
+.al-page-subtitle {
+  font-size: 0.9375rem;
+  color: var(--al-on-surface-variant);
+  opacity: 0.7;
+  max-width: 500px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* User Profile Header Component */
+.al-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--al-surface-container-lowest);
+  padding: 8px 16px 8px 12px;
+  border-radius: 100px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--al-outline-variant);
+}
+
+.al-user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.al-user-name {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--al-on-surface);
+}
+
+.al-user-tier {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--al-primary);
+  opacity: 0.8;
+}
+
+.al-user-avatar {
+  width: 36px;
+  height: 36px;
+  background: var(--al-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+/* Grid System */
+.al-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+}
+
+/* Common Components */
+.al-section-card {
+  background: var(--al-surface-container-lowest);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 32px;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.al-section-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--al-on-surface);
+  margin: 0;
+}
+
+.al-section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.al-section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.al-section-icon {
+  color: var(--al-primary);
+  font-size: 24px !important;
+}
+
+/* Form Styles */
+.al-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.al-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--al-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-left: 4px;
+}
+
+.al-input {
+  width: 100%;
+  height: 48px;
+  background: var(--al-surface-container-highest);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 0 16px;
+  font-family: var(--font-primary);
+  font-size: 0.9375rem;
+  color: var(--al-on-surface);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+}
+
+.al-input:focus {
+  outline: none;
+  background: var(--al-surface-container-lowest);
+  border-color: var(--al-primary);
+  box-shadow: 0 0 0 4px rgba(0, 66, 83, 0.08);
+}
+
+.al-select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%233f484a' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+}
+
+.al-btn-primary {
+  height: 50px;
+  background: linear-gradient(135deg, var(--al-primary) 0%, var(--al-primary-container) 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 0 32px;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,66,83,0.2);
+}
+
+.al-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,66,83,0.3);
+  opacity: 0.95;
+}
+
+.al-btn-primary-full {
+  width: 100% !important;
+  height: 50px;
+  background: linear-gradient(135deg, var(--al-primary) 0%, var(--al-primary-container) 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 0 32px;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,66,83,0.2);
+}
+
+.al-btn-primary-full:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,66,83,0.3);
+}
+
+/* Table Styles */
+.al-table {
+  width: 100%;
+}
+
+.al-table-header {
+  display: flex;
+  padding: 0 16px 12px;
+  border-bottom: 2px solid var(--al-surface-container-high);
+}
+
+.al-th {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--al-on-surface-variant);
+  letter-spacing: 0.1em;
+}
+
+.al-table-row {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--al-surface-container);
+  transition: background 0.2s ease;
+}
+
+.al-table-row:hover {
+  background: var(--al-surface-container-low);
+}
+
+.al-td {
+  display: flex;
+  align-items: center;
+}
+
+.al-icon-action {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: var(--al-surface-container-high);
+  color: var(--al-on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.al-icon-action:hover {
+  background: var(--al-primary);
+  color: white;
+}
+
+.al-icon-action.danger:hover {
+  background: var(--al-error);
+}

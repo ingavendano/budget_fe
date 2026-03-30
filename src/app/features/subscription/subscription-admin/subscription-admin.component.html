@@ -1,0 +1,300 @@
+<main class="al-main-content">
+  <header class="al-page-header">
+    <div class="al-header-left">
+      <h2 class="al-page-title">Gestión de Suscripciones</h2>
+      <p class="al-page-subtitle">Administra planes, cupones y asignaciones de usuarios.</p>
+    </div>
+  </header>
+
+  <!-- Toast -->
+  @if (toast()) {
+    <div class="toast" [class.toast--ok]="toast()!.ok" [class.toast--err]="!toast()!.ok">
+      <span class="material-symbols-outlined">{{ toast()!.ok ? 'check_circle' : 'error' }}</span>
+      {{ toast()!.msg }}
+    </div>
+  }
+
+  <div class="al-content-scroll">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab" [class.tab--active]="activeTab() === 'plans'"   (click)="setTab('plans')">
+        <span class="material-symbols-outlined">layers</span> Planes
+      </button>
+      <button class="tab" [class.tab--active]="activeTab() === 'coupons'" (click)="setTab('coupons')">
+        <span class="material-symbols-outlined">local_activity</span> Cupones
+      </button>
+      <button class="tab" [class.tab--active]="activeTab() === 'users'"   (click)="setTab('users')">
+        <span class="material-symbols-outlined">group</span> Usuarios
+      </button>
+    </div>
+
+    <!-- ═══ PLANS TAB ════════════════════════════════════════════ -->
+    @if (activeTab() === 'plans') {
+      <div class="tab-content">
+        <div class="tab-toolbar">
+          <h3>Planes de suscripción</h3>
+          <button class="al-btn al-btn--primary" (click)="newPlan()">
+            <span class="material-symbols-outlined">add</span> Nuevo plan
+          </button>
+        </div>
+
+        <!-- Plan form -->
+        @if (editingPlan(); as plan) {
+          <div class="al-section-card form-card">
+            <h4>{{ isNewPlan() ? 'Crear plan' : 'Editar plan' }}</h4>
+
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Nombre</label>
+                <input [(ngModel)]="plan.name" class="al-input" placeholder="Plan Premium" />
+              </div>
+              <div class="form-field">
+                <label>Tipo de plan (rol)</label>
+                <select [(ngModel)]="plan.planType" class="al-select">
+                  @for (pt of planTypes; track pt) {
+                    <option [value]="pt">{{ pt }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Precio (USD)</label>
+                <input type="number" [(ngModel)]="plan.price" class="al-input" min="0" step="0.01" />
+              </div>
+              <div class="form-field">
+                <label>Duración (días) — 0 = indefinido</label>
+                <input type="number" [(ngModel)]="plan.durationDays" class="al-input" min="0" />
+              </div>
+              <div class="form-field">
+                <label>Límite metas de ingreso (vacío = sin límite)</label>
+                <input type="number" [(ngModel)]="plan.maxIncomeCategories" class="al-input" min="1" />
+              </div>
+              <div class="form-field">
+                <label>Límite metas de egreso (vacío = sin límite)</label>
+                <input type="number" [(ngModel)]="plan.maxExpenseCategories" class="al-input" min="1" />
+              </div>
+              <div class="form-field form-field--full">
+                <label>Descripción</label>
+                <input [(ngModel)]="plan.description" class="al-input" placeholder="Descripción breve" />
+              </div>
+              <div class="form-field form-field--full">
+                <label class="modules-label">
+                  <span class="material-symbols-outlined">apps</span>
+                  Módulos incluidos
+                  <em>{{ (plan.features?.length ?? 0) }} de {{ APP_MODULES.length }} seleccionados</em>
+                </label>
+                <div class="modules-grid">
+                  @for (mod of APP_MODULES; track mod.key) {
+                    <button
+                      type="button"
+                      class="module-chip"
+                      [class.module-chip--selected]="isFeatureSelected(plan, mod.key)"
+                      (click)="toggleFeature(plan, mod.key)"
+                    >
+                      <span class="material-symbols-outlined">{{ mod.icon }}</span>
+                      <span class="module-chip__label">{{ mod.key }}</span>
+                      @if (isFeatureSelected(plan, mod.key)) {
+                        <span class="module-chip__check material-symbols-outlined">check_circle</span>
+                      }
+                    </button>
+                  }
+                </div>
+              </div>
+              <div class="form-field">
+                <label class="toggle-label">
+                  <input type="checkbox" [(ngModel)]="plan.active" /> Activo
+                </label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="al-btn al-btn--secondary" (click)="editingPlan.set(null)">Cancelar</button>
+              <button class="al-btn al-btn--primary" (click)="savePlan()">Guardar</button>
+            </div>
+          </div>
+        }
+
+        <!-- Plans table -->
+        <div class="al-section-card table-card">
+          <table class="al-table">
+            <thead>
+              <tr>
+                <th>Nombre</th><th>Tipo</th><th>Precio</th><th>Duración</th><th>Activo</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (plan of plans(); track plan.id) {
+                <tr>
+                  <td>
+                    <span class="plan-name">{{ plan.name }}</span>
+                    <span class="plan-desc">{{ plan.description }}</span>
+                  </td>
+                  <td><span class="badge" [ngClass]="planBadge(plan.planType)">{{ plan.planType }}</span></td>
+                  <td>{{ plan.price === 0 ? 'Gratis' : '$' + (plan.price | number:'1.2-2') }}</td>
+                  <td>{{ plan.durationDays === 0 ? 'Indefinido' : plan.durationDays + ' días' }}</td>
+                  <td>
+                    <span class="status-dot" [class.status-dot--on]="plan.active">
+                      {{ plan.active ? 'Sí' : 'No' }}
+                    </span>
+                  </td>
+                  <td class="actions">
+                    <button class="icon-btn" (click)="editPlan(plan)" title="Editar">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="icon-btn icon-btn--danger" (click)="deactivatePlan(plan.id)" title="Desactivar">
+                      <span class="material-symbols-outlined">block</span>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- ═══ COUPONS TAB ══════════════════════════════════════════ -->
+    @if (activeTab() === 'coupons') {
+      <div class="tab-content">
+        <div class="tab-toolbar">
+          <h3>Cupones de descuento</h3>
+          <button class="al-btn al-btn--primary" (click)="newCoupon()">
+            <span class="material-symbols-outlined">add</span> Nuevo cupón
+          </button>
+        </div>
+
+        @if (editingCoupon(); as coupon) {
+          <div class="al-section-card form-card">
+            <h4>{{ isNewCoupon() ? 'Crear cupón' : 'Editar cupón' }}</h4>
+
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Código</label>
+                <input [(ngModel)]="coupon.code" class="al-input" placeholder="PROMO20" style="text-transform:uppercase" />
+              </div>
+              <div class="form-field">
+                <label>Plan aplicable <em>(exclusivo)</em></label>
+                <select [(ngModel)]="coupon.applicablePlan" class="al-select">
+                  @for (pt of planTypes; track pt) {
+                    <option [value]="pt">{{ pt }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Tipo de descuento</label>
+                <select [(ngModel)]="coupon.discountType" class="al-select">
+                  @for (dt of discountTypes; track dt) {
+                    <option [value]="dt">{{ dt === 'PERCENTAGE' ? 'Porcentaje (%)' : 'Fijo ($)' }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Valor del descuento</label>
+                <input type="number" [(ngModel)]="coupon.discountValue" class="al-input" min="0" step="0.01" />
+              </div>
+              <div class="form-field">
+                <label>Máx. usos (vacío = ilimitado)</label>
+                <input type="number" [(ngModel)]="coupon.maxUses" class="al-input" min="1" />
+              </div>
+              <div class="form-field">
+                <label>Expira el</label>
+                <input type="date" [(ngModel)]="coupon.expiresAt" class="al-input" />
+              </div>
+              <div class="form-field form-field--full">
+                <label>Descripción</label>
+                <input [(ngModel)]="coupon.description" class="al-input" placeholder="Descripción interna" />
+              </div>
+              <div class="form-field">
+                <label class="toggle-label"><input type="checkbox" [(ngModel)]="coupon.active" /> Activo</label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="al-btn al-btn--secondary" (click)="editingCoupon.set(null)">Cancelar</button>
+              <button class="al-btn al-btn--primary" (click)="saveCoupon()">Guardar</button>
+            </div>
+          </div>
+        }
+
+        <div class="al-section-card table-card">
+          <table class="al-table">
+            <thead>
+              <tr>
+                <th>Código</th><th>Plan</th><th>Descuento</th><th>Usos</th><th>Expira</th><th>Activo</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of coupons(); track c.id) {
+                <tr>
+                  <td><strong class="coupon-code">{{ c.code }}</strong><br><small>{{ c.description }}</small></td>
+                  <td><span class="badge" [ngClass]="planBadge(c.applicablePlan)">{{ c.applicablePlan }}</span></td>
+                  <td>{{ discountLabel(c) }}</td>
+                  <td>{{ c.usedCount ?? 0 }} / {{ c.maxUses ?? '∞' }}</td>
+                  <td>{{ c.expiresAt ? (c.expiresAt | date:'dd/MM/yy') : '—' }}</td>
+                  <td><span class="status-dot" [class.status-dot--on]="c.active">{{ c.active ? 'Sí' : 'No' }}</span></td>
+                  <td class="actions">
+                    <button class="icon-btn" (click)="editCoupon(c)"><span class="material-symbols-outlined">edit</span></button>
+                    <button class="icon-btn icon-btn--danger" (click)="deactivateCoupon(c.id!)"><span class="material-symbols-outlined">block</span></button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    <!-- ═══ USERS TAB ════════════════════════════════════════════ -->
+    @if (activeTab() === 'users') {
+      <div class="tab-content">
+        <div class="tab-toolbar">
+          <h3>Usuarios y planes asignados</h3>
+        </div>
+
+        @if (editingUser(); as u) {
+          <div class="al-section-card form-card">
+            <h4>Asignar plan — {{ u.name }}</h4>
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Tipo de plan</label>
+                <select [(ngModel)]="userPlanEdit().planType" class="al-select">
+                  @for (pt of planTypes; track pt) { <option [value]="pt">{{ pt }}</option> }
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Fecha de expiración (vacío = indefinido)</label>
+                <input type="date" [(ngModel)]="userPlanEdit().planExpiration" class="al-input" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="al-btn al-btn--secondary" (click)="editingUser.set(null)">Cancelar</button>
+              <button class="al-btn al-btn--primary" (click)="saveUserPlan()">Guardar</button>
+            </div>
+          </div>
+        }
+
+        <div class="al-section-card table-card">
+          <table class="al-table">
+            <thead>
+              <tr><th>Usuario</th><th>Email</th><th>Rol</th><th>Plan</th><th>Expira</th><th></th></tr>
+            </thead>
+            <tbody>
+              @for (u of users(); track u.id) {
+                <tr>
+                  <td>{{ u.name }}</td>
+                  <td><small>{{ u.email }}</small></td>
+                  <td>{{ u.role }}</td>
+                  <td><span class="badge" [ngClass]="planBadge(u.planType)">{{ u.planType }}</span></td>
+                  <td>{{ u.planExpiration ? (u.planExpiration | date:'dd/MM/yy') : 'Indefinido' }}</td>
+                  <td class="actions">
+                    <button class="icon-btn" (click)="editUserPlan(u)"><span class="material-symbols-outlined">edit</span></button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+  </div>
+</main>

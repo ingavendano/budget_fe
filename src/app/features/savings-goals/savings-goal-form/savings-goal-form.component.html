@@ -1,0 +1,69 @@
+<div class="form-container">
+  <div class="form-card">
+    <header class="form-header">
+      <button class="back-btn" routerLink="/savings-goals">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h2 class="form-title">{{ isEdit() ? 'Editar Meta' : 'Nueva Meta de Ahorro' }}</h2>
+    </header>
+
+    @if (loading()) {
+      <div class="loading-state">Cargando datos...</div>
+    } @else {
+      <div class="form-content">
+        <!-- Icon Selector -->
+        <div class="field-group">
+          <label class="field-label">Icono de la meta</label>
+          <div class="icon-grid">
+            @for (icon of icons; track icon) {
+              <button class="icon-item" 
+                      [class.active]="selectedIcon() === icon"
+                      (click)="selectedIcon.set(icon)">
+                {{ icon }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Nombre de la meta</label>
+          <input type="text" 
+                 class="al-input" 
+                 [(ngModel)]="name" 
+                 placeholder="Ej. Fondo de Emergencia">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Descripción (Opcional)</label>
+          <textarea class="al-input" 
+                    [(ngModel)]="description" 
+                    rows="2"
+                    placeholder="¿Para qué es este ahorro?"></textarea>
+        </div>
+
+        <div class="row-fields">
+          <div class="field-group">
+            <label class="field-label">Monto Meta ($)</label>
+            <input type="number" 
+                   class="al-input" 
+                   [(ngModel)]="targetAmount" 
+                   placeholder="0.00">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Fecha Límite</label>
+            <input type="date" 
+                   class="al-input" 
+                   [(ngModel)]="deadline">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="cancel-btn" routerLink="/savings-goals">Cancelar</button>
+          <button class="save-btn" (click)="save()">
+            {{ isEdit() ? 'Actualizar Meta' : 'Empezar a Ahorrar' }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

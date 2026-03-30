@@ -1,0 +1,386 @@
+{
+  "version": "2.9",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 800,
+      "height": 600,
+      "fill": "#FFFFFF",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "j0kAY",
+      "x": -58,
+      "y": 0,
+      "name": "Income Redesign Sketch",
+      "width": 1000,
+      "height": 800,
+      "fill": "#F8FAFC",
+      "layout": "vertical",
+      "gap": 32,
+      "padding": 40,
+      "children": [
+        {
+          "type": "text",
+          "id": "vZlFS",
+          "name": "header",
+          "fill": "#1E293B",
+          "content": "Ajuste de Ingresos",
+          "fontFamily": "Inter",
+          "fontSize": 32,
+          "fontWeight": "bold"
+        },
+        {
+          "type": "frame",
+          "id": "G44EA",
+          "name": "Input Card",
+          "width": 923,
+          "height": 407,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#E2E8F0"
+          },
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 32,
+          "children": [
+            {
+              "type": "frame",
+              "id": "wdPTB",
+              "name": "Input Row",
+              "width": "fill_container",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "WyY48",
+                  "name": "comboGroup",
+                  "width": 310,
+                  "height": 72,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "l5C1e",
+                      "name": "comboLabel",
+                      "fill": "#64748B",
+                      "content": "Categoría",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ytrRc",
+                      "name": "Combo Box",
+                      "width": "fill_container",
+                      "height": 48,
+                      "fill": "#F1F5F9",
+                      "cornerRadius": 8,
+                      "padding": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "4sJvF",
+                          "name": "comboText",
+                          "fill": "#94A3B8",
+                          "content": "Seleccione una categoría...",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NCNgF",
+                  "name": "valueGroup",
+                  "width": 240,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xEzUu",
+                      "name": "valueLabel",
+                      "fill": "#64748B",
+                      "content": "Descripción",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aNFaa",
+                      "name": "Value Input",
+                      "width": "fill_container",
+                      "height": 48,
+                      "fill": "#F1F5F9",
+                      "cornerRadius": 8,
+                      "padding": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tWVqw",
+                          "name": "comboText",
+                          "fill": "#94A3B8",
+                          "content": "Descripción del Ingreso",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Byofv",
+                  "name": "valueGroup",
+                  "width": 240,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OqPnJ",
+                      "name": "valueLabel",
+                      "fill": "#64748B",
+                      "content": "Valor",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zrlwO",
+                      "name": "Value Input",
+                      "width": "fill_container",
+                      "height": 48,
+                      "fill": "#F1F5F9",
+                      "cornerRadius": 8,
+                      "padding": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KHS7d",
+                          "name": "valueText",
+                          "fill": "#1E293B",
+                          "content": "$ 0.00",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a4i0e",
+              "name": "divider",
+              "width": "fill_container",
+              "height": 1,
+              "fill": "#F1F5F9"
+            },
+            {
+              "type": "frame",
+              "id": "wwGGE",
+              "name": "Calculation Area",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Lsyaa",
+                  "name": "summaryRow",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Co8P8",
+                      "name": "grossLabel",
+                      "fill": "#64748B",
+                      "content": "CATEGORÍA - Descripción",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "RxKJS",
+                      "name": "grossValue",
+                      "fill": "#1E293B",
+                      "content": "$ 2,500.00",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "aSBHQ",
+                  "name": "deductionsList",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    8,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "zuXUn",
+                      "name": "deduction1",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "pQeOt",
+                          "name": "d1Label",
+                          "fill": "#94A3B8",
+                          "content": "ISSS",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "t9fWc",
+                          "name": "d1Value",
+                          "fill": "#EF4444",
+                          "content": "- $ 75.00",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "epxML",
+                      "name": "deduction2",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mYwrc",
+                          "name": "d2Label",
+                          "fill": "#94A3B8",
+                          "content": "ISR (Renta)",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "4fyms",
+                          "name": "d2Value",
+                          "fill": "#EF4444",
+                          "content": "- $ 324.50",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jL7tJ",
+                  "name": "netRow",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "top": 1
+                    },
+                    "fill": "#F1F5F9"
+                  },
+                  "gap": 16,
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gWzig",
+                      "name": "netLabel",
+                      "fill": "#1E293B",
+                      "content": "Ingreso Neto",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "bold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "i6szV",
+                      "name": "netValue",
+                      "fill": "#10B981",
+                      "content": "$ 2,100.50",
+                      "fontFamily": "Inter",
+                      "fontSize": 22,
+                      "fontWeight": "800"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EPOKv",
+              "name": "btn2",
+              "rotation": 0.1286423630790427,
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#3B82F6",
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "XgBW2",
+                  "fill": "#FFFFFF",
+                  "content": "Guardar Ingreso",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

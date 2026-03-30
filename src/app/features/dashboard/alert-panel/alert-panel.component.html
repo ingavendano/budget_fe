@@ -1,0 +1,90 @@
+<div class="alert-panel">
+
+  <!-- Header -->
+  <div class="alert-panel__header">
+    <span class="alert-panel__title">Alertas inteligentes</span>
+    @if (alertService.criticalCount() > 0) {
+      <span class="alert-panel__badge alert-panel__badge--critical">
+        {{ alertService.criticalCount() }} crítica{{ alertService.criticalCount() > 1 ? 's' : '' }}
+      </span>
+    } @else if (alertService.alertCount() === 0 && !alertService.loading()) {
+      <span class="alert-panel__badge alert-panel__badge--success">Todo en orden</span>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (alertService.loading()) {
+    <div class="alert-panel__skeleton">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3]"></div>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (alertService.error()) {
+    <div class="alert-panel__error">
+      <span>{{ alertService.error() }}</span>
+      <button (click)="alertService.loadAlerts(year(), month())">Reintentar</button>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!alertService.loading() && !alertService.error() && alertService.alertCount() === 0 && upsellAlerts().length === 0) {
+    <div class="alert-panel__empty">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="14" stroke="var(--color-border-secondary)" stroke-width="1.5"/>
+        <path d="M11 16l3.5 3.5L21 11" stroke="var(--color-text-success)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <p>Sin alertas este mes. ¡Tus finanzas están saludables!</p>
+    </div>
+  }
+
+  <!-- Lista de alertas -->
+  @if (!alertService.loading() && (alertService.alertCount() > 0 || upsellAlerts().length > 0)) {
+    <ul class="alert-panel__list">
+      <!-- Filtros Upsell -->
+      @for (alert of upsellAlerts(); track alert.id) {
+        <li
+          class="alert-item {{ severityClass(alert.severity) }}"
+          (click)="navigateTo(alert.actionRoute)"
+          [attr.role]="alert.actionRoute ? 'button' : null"
+          [attr.tabindex]="alert.actionRoute ? '0' : null"
+          (keydown.enter)="navigateTo(alert.actionRoute)"
+        >
+          <span class="alert-item__dot"></span>
+
+          <div class="alert-item__body">
+            <p class="alert-item__title">{{ alert.title }}</p>
+            <p class="alert-item__desc">{{ alert.description }}</p>
+          </div>
+
+          @if (alert.actionRoute) {
+            <span class="alert-item__action">{{ alert.actionLabel }} →</span>
+          }
+        </li>
+      }
+
+      @for (alert of alertService.alerts(); track trackById($index, alert)) {
+        <li
+          class="alert-item {{ severityClass(alert.severity) }}"
+          (click)="navigateTo(alert.actionRoute)"
+          [attr.role]="alert.actionRoute ? 'button' : null"
+          [attr.tabindex]="alert.actionRoute ? '0' : null"
+          (keydown.enter)="navigateTo(alert.actionRoute)"
+        >
+          <span class="alert-item__dot"></span>
+
+          <div class="alert-item__body">
+            <p class="alert-item__title">{{ alert.title }}</p>
+            <p class="alert-item__desc">{{ alert.description }}</p>
+          </div>
+
+          @if (alert.actionRoute) {
+            <span class="alert-item__action">{{ alert.actionLabel }} →</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+
+</div>

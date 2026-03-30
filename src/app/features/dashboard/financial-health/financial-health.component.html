@@ -1,0 +1,55 @@
+<div class="health-card">
+  <div class="health-card__header">
+    <div class="header-main">
+      <span class="health-card__title">Salud financiera del mes</span>
+      <div class="health-badge" [className]="'health-badge health-badge--' + healthLabel().class">
+        {{ healthLabel().text }}
+      </div>
+    </div>
+    <div class="score-circle">
+      <span class="score-value">{{ globalScore() }}</span>
+      <span class="score-label">pts</span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="health-card__skeleton">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3]">
+        <div class="skeleton-text"></div>
+        <div class="skeleton-bar"></div>
+      </div>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (!loading() && error()) {
+    <div class="health-card__error">
+      <p>{{ error() }}</p>
+      <button (click)="fetchData(year(), month())">Reintentar</button>
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!loading() && !error()) {
+    <div class="health-card__indicators">
+      @for (ind of indicators(); track ind.label) {
+        <div class="indicator">
+          <div class="indicator__header">
+            <span class="indicator__label">{{ ind.label }}</span>
+            <span class="indicator__value" [className]="'indicator__value indicator__value--' + ind.status">
+              {{ ind.value }}
+            </span>
+          </div>
+          <div class="indicator__progress-bg">
+            <div class="indicator__progress-bar" 
+                 [style.width.%]="ind.percentage"
+                 [className]="'indicator__progress-bar indicator__progress-bar--' + ind.status">
+            </div>
+          </div>
+          <span class="indicator__description">{{ ind.description }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

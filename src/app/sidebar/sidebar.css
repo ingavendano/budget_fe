@@ -1,0 +1,34 @@
+/* Sidebar-specific styles should eventually move from styles.css to here if we want full encapsulation, 
+   but for now they are already globally defined in styles.css and applied correctly. */
+
+.al-sidebar {
+  width: 280px;
+  background: var(--al-surface-container-lowest);
+  border-right: 1px solid var(--al-outline-variant);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 24px;
+  height: 100vh;
+  box-sizing: border-box;
+  position: fixed; /* Fixed to the left */
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Admin-only nav item — distinct accent */
+.al-nav-item--admin {
+  border-top: 1px solid var(--al-outline-variant);
+  margin-top: 4px;
+  padding-top: 12px;
+  color: var(--al-primary) !important;
+  opacity: 0.85;
+
+  &:hover { opacity: 1; background: color-mix(in srgb, var(--al-primary) 8%, transparent); }
+
+  .material-symbols-outlined { color: var(--al-primary) !important; }
+}

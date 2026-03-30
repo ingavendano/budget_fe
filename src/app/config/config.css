@@ -1,0 +1,682 @@
+/* ============================================================
+   THE ARCHITECTURAL LEDGER — Config Component Styles
+   ============================================================ */
+
+/* Page-specific refinements can go here. 
+   Common al- classes are now defined globally in styles.css */
+
+.al-config-page {
+  padding: 48px 40px 80px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+/* Main Layout: Left + Right */
+.al-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .al-main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Category Table Specifics */
+.al-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .al-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.al-form-inputs {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Color Dots */
+.al-color-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.al-color-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.al-color-dot:hover {
+  transform: scale(1.1);
+}
+
+.al-color-dot.active {
+  border-color: var(--al-on-surface);
+  transform: scale(1.2);
+}
+
+/* Icon Buttons */
+.al-icon-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+
+.al-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--al-surface-container-low);
+  border: 1px solid var(--al-outline-variant);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--al-on-surface-variant);
+  transition: all 0.2s;
+}
+
+.al-icon-btn:hover {
+  background: var(--al-surface-container);
+  color: var(--al-on-surface);
+}
+
+.al-icon-btn.active {
+  background: var(--al-primary-container);
+  color: var(--al-on-primary-container);
+  border-color: var(--al-primary);
+}
+
+.al-category-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.al-table-body {
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-right: -4px;
+}
+
+/* Custom Scrollbar */
+.al-table-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.al-table-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.al-table-body::-webkit-scrollbar-thumb {
+  background: var(--al-surface-container-high);
+  border-radius: 10px;
+}
+
+.al-table-body::-webkit-scrollbar-thumb:hover {
+  background: var(--al-outline-variant);
+}
+
+.al-table-header {
+  display: flex;
+  padding: 0 8px 10px;
+  border-bottom: 1px solid var(--al-surface-container-high);
+  gap: 4px;
+}
+
+.al-th {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--al-on-surface-variant);
+}
+
+.al-table-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.al-table-row:hover {
+  background: var(--al-surface-container-low);
+}
+
+.al-table-row.is-selected {
+  background: var(--al-secondary-container);
+}
+
+.al-td {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: var(--al-on-surface);
+}
+
+.cat-info {
+  gap: 10px;
+}
+
+.al-cat-icon {
+  font-size: 18px !important;
+}
+
+.al-cat-name {
+  font-weight: 500;
+}
+
+/* Type Chips */
+.al-chip {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.al-chip.income {
+  background: rgba(0, 66, 83, 0.12);
+  color: var(--al-primary);
+}
+
+.al-chip.expense {
+  background: rgba(186, 26, 26, 0.1);
+  color: var(--al-error);
+}
+
+/* Action Icons */
+.al-actions {
+  gap: 4px;
+}
+
+.al-icon-action {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--al-on-surface-variant);
+  transition: all 0.15s;
+}
+
+.al-icon-action .material-symbols-outlined {
+  font-size: 16px !important;
+}
+
+.al-icon-action:hover {
+  background: var(--al-surface-container);
+  color: var(--al-on-surface);
+}
+
+.al-icon-action.danger:hover {
+  background: rgba(186, 26, 26, 0.08);
+  color: var(--al-error);
+}
+
+/* Association Ledger & Tax Chips */
+.al-ledger-table {
+  background: var(--al-surface-container-low);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.al-ledger-table .al-table-header {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--al-surface-container);
+}
+
+.al-ledger-table .al-table-row {
+  padding: 14px 16px;
+}
+
+.al-tax-chip {
+  background: var(--al-secondary-container);
+  color: var(--al-on-secondary-container);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  white-space: nowrap;
+}
+
+.al-empty-text-sm {
+  font-size: 0.8125rem;
+  color: var(--al-on-surface-variant);
+  opacity: 0.6;
+}
+
+/* Empty State */
+.al-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 20px;
+  color: var(--al-on-surface-variant);
+  font-size: 0.8125rem;
+  opacity: 0.6;
+}
+
+.al-empty-state .material-symbols-outlined {
+  font-size: 28px !important;
+  opacity: 0.4;
+}
+
+/* ============================================================
+   Tax Configuration Section
+   ============================================================ */
+.al-tax-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 860px) {
+  .al-tax-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Toggles */
+.al-toggle-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: var(--al-surface-container-low);
+  border-radius: 14px;
+  margin-bottom: 24px;
+}
+
+.al-toggle-group {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Limit value field — appears below toggles when enabled */
+.al-limit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.al-toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.al-toggle {
+  width: 44px;
+  height: 26px;
+  background: var(--al-surface-container-high);
+  border-radius: 999px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.al-toggle.on {
+  background: var(--al-primary);
+  justify-content: flex-end;
+}
+
+.al-toggle-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.al-toggle-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--al-on-surface-variant);
+  white-space: nowrap;
+}
+
+/* Tax Library Table */
+.al-tax-table-wrapper {
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--al-surface-container-low);
+  margin-bottom: 20px;
+}
+
+.al-tax-table-wrapper .al-table-header {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--al-surface-container);
+}
+
+.al-tax-table-wrapper .al-table-row {
+  padding: 14px 16px;
+  border-radius: 0;
+  cursor: default;
+}
+
+.al-tax-table-wrapper .al-table-row:hover {
+  background: var(--al-surface-container);
+}
+
+.al-tax-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--al-on-surface);
+}
+
+.al-tax-contract {
+  font-size: 0.8125rem;
+  color: var(--al-on-surface-variant);
+}
+
+.al-rate {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--al-primary);
+}
+
+.al-rate.variable {
+  color: var(--al-secondary);
+  font-style: italic;
+}
+
+/* ============================================================
+   ISR Parameterization Table
+   ============================================================ */
+.al-isr-table {
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--al-surface-container-low);
+}
+
+.al-isr-header {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+  padding: 12px 20px;
+  background: var(--al-surface-container);
+  gap: 8px;
+}
+
+.al-isr-th {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--al-on-surface-variant);
+}
+
+.al-isr-th.right {
+  text-align: right;
+}
+
+.al-isr-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+  padding: 0 8px;
+  gap: 8px;
+  border-bottom: 1px solid var(--al-surface-container);
+  transition: background 0.15s;
+}
+
+.al-isr-row:last-child {
+  border-bottom: none;
+}
+
+.al-isr-row:hover {
+  background: var(--al-surface-container);
+}
+
+.al-isr-td {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.al-isr-td.right {
+  justify-content: flex-end;
+}
+
+.al-isr-tier {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--al-on-surface-variant);
+  padding: 12px 12px;
+}
+
+.al-isr-input {
+  width: 100%;
+  height: 46px;
+  background: transparent;
+  border: none;
+  text-align: right;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--al-on-surface);
+  padding: 0 12px;
+  transition: background 0.15s;
+}
+
+.al-isr-input:focus {
+  outline: none;
+  background: var(--al-surface-container-highest);
+  border-radius: 8px;
+}
+
+.al-isr-input::placeholder {
+  color: var(--al-outline-variant);
+}
+
+/* ============================================================
+   Right Sidebar
+   ============================================================ */
+.al-right-sidebar {
+  position: sticky;
+  top: 24px;
+}
+
+.al-sidebar-card {
+  background: var(--al-surface-container-lowest);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.al-sidebar-title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--al-on-surface);
+  margin: 0 0 20px;
+}
+
+.al-association-link-icon {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0;
+  color: var(--al-on-surface-variant);
+  opacity: 0.4;
+}
+
+.al-association-link-icon .material-symbols-outlined {
+  font-size: 22px !important;
+}
+
+/* Association List */
+.al-assoc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.al-assoc-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--al-surface-container-low);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.al-assoc-item:hover {
+  background: var(--al-secondary-container);
+}
+
+.al-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--al-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  color: white;
+}
+
+.al-checkbox.checked {
+  background: var(--al-primary);
+  border-color: var(--al-primary);
+}
+
+.al-checkbox .material-symbols-outlined {
+  font-size: 14px !important;
+}
+
+.al-assoc-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.al-assoc-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--al-on-surface);
+}
+
+.al-assoc-type {
+  font-size: 0.6875rem;
+  color: var(--al-on-surface-variant);
+}
+
+/* Empty Association State */
+.al-empty-assoc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 12px;
+  text-align: center;
+  color: var(--al-on-surface-variant);
+  font-size: 0.8125rem;
+  opacity: 0.5;
+}
+
+.al-empty-assoc .material-symbols-outlined {
+  font-size: 32px !important;
+  opacity: 0.3;
+}
+
+/* Associate Button */
+.al-btn-associate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  background: var(--al-gradient-premium);
+  color: var(--al-on-primary);
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.al-btn-associate:hover {
+  opacity: 0.9;
+}
+
+/* Info Card (glassmorphism-like) */
+.al-info-card {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  background: var(--al-gradient-premium);
+  border-radius: 16px;
+  margin-top: 8px;
+}
+
+.al-info-card-icon {
+  color: rgba(255,255,255,0.8);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.al-info-card-icon .material-symbols-outlined {
+  font-size: 22px !important;
+}
+
+.al-info-card-title {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
+  margin: 0 0 6px;
+}
+
+.al-info-card-body {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.5;
+  margin: 0;
+}

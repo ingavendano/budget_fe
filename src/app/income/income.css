@@ -1,0 +1,119 @@
+/* Income Component Styles - Synchronized with Architectural Ledger (AL) Theme */
+ 
+/* The majority of styles are now provided by the global al- classes in styles.css */
+ 
+/* Component-specific refinements */
+ 
+.al-summary-card {
+    position: relative;
+    overflow: hidden;
+    padding: 32px;
+    border-radius: 24px;
+    min-height: 240px;
+    background: var(--al-gradient-premium);
+    color: white;
+    box-shadow: var(--shadow-lg);
+}
+ 
+.al-summary-title {
+    font-family: var(--al-font-headline);
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+ 
+.al-progress-container {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+ 
+.al-amount-text {
+    font-family: var(--al-font-body);
+    font-weight: 600;
+}
+ 
+.al-cat-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+ 
+/* Table body adjustments for income */
+.al-table-body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--al-outline-variant) transparent;
+}
+ 
+.al-table-body::-webkit-scrollbar {
+    width: 6px;
+}
+ 
+.al-table-body::-webkit-scrollbar-thumb {
+    background-color: var(--al-outline-variant);
+    border-radius: 10px;
+}
+ 
+/* Animation for progress bar */
+@keyframes progress-grow {
+    from { width: 0; }
+    to { width: var(--progress-width); }
+}
+ 
+.al-progress-bar {
+    animation: progress-grow 1s ease-out forwards;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    /* Hide everything except the history section */
+    .al-sidebar, 
+    .al-header, 
+    .al-summary-card, 
+    .al-form-section,
+    .al-actions-row button {
+        display: none !important;
+    }
+
+    .al-history-section {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .al-table-header {
+        background: var(--al-primary) !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .al-table-row {
+        border-bottom: 1px solid #eee !important;
+        page-break-inside: avoid;
+    }
+
+    .al-table-body {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .al-totalizer-row {
+        background: #f5f7f8 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-weight: bold;
+    }
+}

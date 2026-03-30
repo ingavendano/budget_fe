@@ -1,0 +1,176 @@
+<main class="al-main-content">
+  <header class="al-page-header">
+    <div class="al-header-left">
+      <h2 class="al-page-title">Plantilla de Presupuesto</h2>
+      <p class="al-page-subtitle">Configura tus gastos base mensuales para importarlos rápidamente cada mes.</p>
+    </div>
+    <div class="al-header-right">
+      <div class="al-user-profile">
+        <div class="al-user-info">
+          <span class="al-user-name">Usuario Corporativo</span>
+          <span class="al-user-tier">Gestión Presupuestaria</span>
+        </div>
+        <div class="al-user-avatar">UP</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="al-dashboard-grid">
+    <!-- Left Column: Form Section -->
+    <div class="al-content-column">
+      <div class="al-section-card">
+        <div class="al-section-header-row">
+          <div class="al-section-title-group">
+            <span class="al-section-icon material-symbols-outlined"
+              style="font-variation-settings: 'FILL' 1;">{{ editId() ? 'edit_note' : 'assignment_add' }}</span>
+            <h3 class="al-section-title">{{ editId() ? 'Editar partida base' : 'Añadir partida base' }}</h3>
+          </div>
+        </div>
+
+        <div class="al-form-grid" style="grid-template-columns: 1fr 1fr; gap: 24px;">
+          <div class="al-field-group">
+            <label class="al-label">CATEGORÍA</label>
+            <select class="al-input al-select" [ngModel]="selectedCategoryId()"
+              (ngModelChange)="selectedCategoryId.set($event)">
+              <option value="">Selecciona Categoría</option>
+              <option *ngFor="let cat of expenseCategories()" [value]="cat.id">
+                {{cat.name}}
+              </option>
+            </select>
+          </div>
+          <div class="al-field-group">
+            <label class="al-label">MONTO SUGERIDO</label>
+            <div class="al-input-wrapper">
+              <span class="al-input-prefix">$</span>
+              <input class="al-input al-amount-input" type="text" [ngModel]="amount()"
+                (ngModelChange)="amount.set($event)" mask="separator.2" thousandSeparator=","
+                [dropSpecialCharacters]="true" placeholder="0.00">
+            </div>
+          </div>
+        </div>
+
+        <div class="al-form-grid" style="grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px;">
+          <div class="al-field-group">
+            <label class="al-label">RECURRENCIA ESTIMADA</label>
+            <div class="al-radio-group" style="display: flex; gap: 16px; margin-top: 8px;">
+              <label class="al-radio-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="radio" name="expenseType" value="VARIABLE" 
+                  [ngModel]="expenseType()" (ngModelChange)="expenseType.set($event)"
+                  style="accent-color: var(--al-primary); width: 18px; height: 18px;">
+                <span style="font-size: 14px; font-weight: 500; color: var(--al-on-surface);">Variable</span>
+              </label>
+              <label class="al-radio-item" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="radio" name="expenseType" value="FIJO" 
+                  [ngModel]="expenseType()" (ngModelChange)="expenseType.set($event)"
+                  style="accent-color: var(--al-primary); width: 18px; height: 18px;">
+                <span style="font-size: 14px; font-weight: 500; color: var(--al-on-surface);">Fijo</span>
+              </label>
+            </div>
+          </div>
+          <div class="al-field-group">
+            <label class="al-label">DÍA DE PAGO ESTIMADO</label>
+            <input class="al-input" type="text" [ngModel]="estimatedDay()" (ngModelChange)="estimatedDay.set($event)"
+                   placeholder="Ej: 15 de cada mes">
+          </div>
+        </div>
+
+        <div class="al-field-group" style="margin-top: 16px;">
+          <label class="al-label">NOTA DE PLANTILLA (OPCIONAL)</label>
+          <input class="al-input" type="text" [ngModel]="description()" (ngModelChange)="description.set($event)"
+            placeholder="Ej: Pago mensual de Internet">
+        </div>
+
+        <div class="al-section-footer" style="margin-top: 24px;">
+          <button class="al-btn-primary-full" [style.width]="editId() ? 'calc(100% - 120px)' : '100%'" (click)="saveTemplate()">
+            {{ editId() ? 'Guardar cambios' : 'Añadir a plantilla' }}
+          </button>
+          <button *ngIf="editId()" class="al-btn-secondary" style="width: 100px; margin-left: 20px;" (click)="cancelEdit()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Summary Cards -->
+    <div class="al-summary-column">
+      <div class="al-summary-card primary">
+        <div class="al-summary-bg-shapes"></div>
+        <div class="al-summary-content">
+          <h3 class="al-summary-label">TOTAL PLANTILLA</h3>
+          <div class="al-summary-main">
+            <span class="al-summary-sublabel">Base Mensual Proyectada</span>
+            <span class="al-summary-value">{{totalBudget() | currency}}</span>
+          </div>
+
+          <div style="margin-top: 24px;">
+             <p style="font-size: 0.8rem; opacity: 0.8; line-height: 1.6;">
+               Esta plantilla sirve como base para tus gastos. Al iniciar un nuevo mes, podrás importar todos estos registros con un solo clic.
+             </p>
+          </div>
+
+          <button class="al-btn-glass" (click)="importToMonthlyExpenses()" style="margin-top: 24px;">
+            <span class="material-symbols-outlined">upload_file</span>
+            Confirmar e Importar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row: Table Section -->
+    <div class="al-section-card al-full-width-card">
+      <div class="al-section-header-row">
+        <div class="al-section-title-group">
+          <span class="al-section-icon material-symbols-outlined">list_alt</span>
+          <h3 class="al-section-title">Partidas de la plantilla</h3>
+        </div>
+      </div>
+
+      <div class="al-table">
+        <div class="al-table-header">
+          <span class="al-th" style="flex:1">Categoría</span>
+          <span class="al-th" style="flex:1">Descripción / Nota</span>
+          <span class="al-th" style="width:120px; text-align:center">Recurrencia</span>
+          <span class="al-th" style="width:120px; text-align:right">Monto Base</span>
+          <span class="al-th" style="width:120px; text-align:center">Acciones</span>
+        </div>
+
+        <div class="al-table-body">
+          <div class="al-table-row" *ngFor="let item of budgetTemplates()">
+            <div class="al-td" style="flex:1">
+              <span class="al-cat-icon material-symbols-outlined" [style.color]="item.category.color">
+                {{item.category.icon}}
+              </span>
+              <span class="al-cat-name" style="margin-left:8px">{{item.category.name}}</span>
+            </div>
+            <div class="al-td" style="flex:1">
+              <span class="al-cat-name" style="margin-left:8px">{{item.description}}</span>
+            </div>
+            <div class="al-td" style="width:120px; justify-content: center;">
+              <span class="al-badge" 
+                [style.background]="item.expenseType === 'FIJO' ? 'color-mix(in srgb, var(--al-primary), transparent 90%)' : 'rgba(112, 120, 125, 0.1)'"
+                [style.color]="item.expenseType === 'FIJO' ? 'var(--al-primary)' : 'var(--al-outline)'">
+                {{item.expenseType}}
+              </span>
+            </div>
+            <div class="al-td" style="width:120px; justify-content: flex-end;">
+              <span class="al-amount-text">{{item.amount | currency}}</span>
+            </div>
+            <div class="al-td al-actions" style="width:120px; justify-content: center;">
+              <button class="al-icon-action" title="Editar" (click)="editTemplate(item)">
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+              <button class="al-icon-action danger" title="Eliminar" (click)="deleteTemplate(item.id)">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="budgetTemplates().length === 0" class="al-empty-state" style="padding: 40px;">
+            <span class="material-symbols-outlined">playlist_add</span>
+            <p>Tu plantilla está vacía. Comienza añadiendo gastos fijos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

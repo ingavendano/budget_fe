@@ -1,0 +1,225 @@
+/* Savings Goals Styles */
+
+.mini-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--al-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.mini-value {
+    font-size: 1.75rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+.mini-value.success { color: #1a8b1a; }
+.mini-value.accent { color: #6200ee; }
+.mini-value.warning { color: #f57c00; }
+
+.al-summary-card.mini {
+    background: white;
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid var(--al-surface-container-high);
+}
+
+/* Icon Selector */
+.icon-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.icon-option {
+    font-size: 24px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--al-surface-container-lowest);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-option:hover {
+    background: var(--al-surface-container-low);
+    transform: scale(1.1);
+}
+
+.icon-option.active {
+    background: color-mix(in srgb, var(--al-primary), transparent 90%);
+    border-color: var(--al-primary);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--al-primary), transparent 90%);
+}
+
+/* Goals Grid */
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.goal-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    border: 1px solid var(--al-surface-container-high);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.goal-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+}
+
+/* Progress Bar Circle */
+.progress-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+}
+
+.progress-svg {
+    transform: rotate(-90deg);
+}
+
+.progress-bg {
+    fill: none;
+    stroke: #f0f2f5;
+    stroke-width: 8;
+}
+
+.progress-bar {
+    fill: none;
+    stroke: var(--al-primary);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    transition: stroke-dashoffset 1s ease-out;
+}
+
+.progress-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.goal-icon {
+    font-size: 32px;
+}
+
+.goal-percent {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--al-primary);
+}
+
+/* Goal Info */
+.goal-info {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.goal-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--al-on-surface);
+    margin-bottom: 4px;
+}
+
+.goal-desc {
+    font-size: 0.8125rem;
+    color: var(--al-on-surface-variant);
+    margin-bottom: 12px;
+}
+
+.goal-deadline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--al-primary);
+    background: color-mix(in srgb, var(--al-primary), transparent 93%);
+    padding: 4px 12px;
+    border-radius: 99px;
+}
+
+.goal-deadline .material-symbols-outlined {
+    font-size: 16px;
+}
+
+/* Metrics */
+.goal-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 16px 0;
+    border-top: 1px solid var(--al-surface-container-high);
+    border-bottom: 1px solid var(--al-surface-container-high);
+    margin-bottom: 20px;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.metric-label {
+    font-size: 0.7rem;
+    color: var(--al-on-surface-variant);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.metric-value {
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.metric-value.saved { color: #1a8b1a; }
+.metric-value.total { color: var(--al-on-surface); }
+.metric-value.missing { color: var(--al-primary); }
+
+/* Card Footer */
+.card-footer {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.abonar-btn {
+    flex: 1;
+    background: #e8f5e9;
+    color: #1a8b1a;
+    border: none;
+    font-weight: 800;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.abonar-btn:hover {
+    background: #c8e6c9;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

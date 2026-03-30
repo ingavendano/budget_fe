@@ -1,0 +1,161 @@
+.deposit-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 24px;
+  background: #fdfdfc;
+}
+
+.deposit-card {
+  width: 100%;
+  max-width: 440px;
+  background: #fff;
+  border-radius: 28px;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 32px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+}
+
+.deposit-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  position: relative;
+
+  .back-btn {
+    background: #f9f9f8;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #73726c;
+  }
+
+  .header-text {
+    flex: 1;
+    .title { font-size: 14px; font-weight: 700; color: #9c9a92; text-transform: uppercase; margin: 0; }
+    .subtitle { font-size: 20px; font-weight: 700; color: #1a1a1a; margin: 2px 0 0; }
+  }
+
+  .goal-icon {
+    font-size: 32px;
+    width: 60px;
+    height: 60px;
+    background: #f9f9f8;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.deposit-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.current-status {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: #f9f9f8;
+  padding: 16px;
+  border-radius: 20px;
+
+  .status-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    .label { font-size: 11px; color: #73726c; font-weight: 600; }
+    .value { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+  }
+}
+
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .input-label { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-left: 4px; }
+
+  .amount-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .currency {
+      position: absolute;
+      left: 20px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #73726c;
+    }
+
+    .amount-input {
+      width: 100%;
+      padding: 20px 20px 20px 44px;
+      border-radius: 20px;
+      border: 1.5px solid #eee;
+      font-size: 32px;
+      font-weight: 700;
+      color: #1d9e75;
+      background: #fdfdfc;
+      transition: all 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: #1d9e75;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(29, 158, 117, 0.1);
+      }
+
+      &::placeholder { color: #eee; }
+    }
+  }
+
+  .input-hint { font-size: 12px; color: #9c9a92; margin: 0; text-align: center; }
+}
+
+.deposit-actions {
+  display: flex;
+  gap: 12px;
+
+  button {
+    flex: 1;
+    height: 54px;
+    border-radius: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cancel-btn {
+    background: transparent;
+    border: 1.5px solid #eee;
+    color: #73726c;
+    &:hover { background: #f9f9f8; }
+  }
+
+  .confirm-btn {
+    background: #1d9e75;
+    color: #fff;
+    border: none;
+    &:hover { background: #167d5d; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #73726c;
+}

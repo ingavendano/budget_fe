@@ -1,0 +1,198 @@
+<main class="al-main-content">
+  <header class="al-page-header">
+    <div class="al-header-left">
+      <h2 class="al-page-title">Suscripción</h2>
+      <p class="al-page-subtitle">Elige el plan que mejor se adapte a tus necesidades.</p>
+    </div>
+    @if (isAdmin) {
+      <div class="al-header-right">
+        <a routerLink="/admin/subscriptions" class="al-btn al-btn--secondary">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+          Gestionar planes
+        </a>
+      </div>
+    }
+  </header>
+
+  <div class="al-content-scroll">
+
+    <!-- Current plan banner -->
+    @if (myPlan(); as mp) {
+      <div class="current-plan-banner" [class]="'current-plan-banner--' + (mp.planType ? mp.planType.toLowerCase() : 'none')">
+        <span class="material-symbols-outlined">verified</span>
+        <span>Plan actual: <strong>{{ mp.planType || 'Ninguno' }}</strong></span>
+        @if (mp.planExpiration) {
+          <span class="expiry">· Válido hasta {{ mp.planExpiration | date:'dd/MM/yyyy' }}</span>
+        } @else {
+          <span class="expiry">· Sin expiración</span>
+        }
+      </div>
+    }
+
+    <!-- Success / Error messages -->
+    @if (successMsg()) {
+      <div class="al-alert al-alert--success">
+        <span class="material-symbols-outlined">check_circle</span>
+        {{ successMsg() }}
+      </div>
+    }
+    @if (errorMsg()) {
+      <div class="al-alert al-alert--error">
+        <span class="material-symbols-outlined">error</span>
+        {{ errorMsg() }}
+      </div>
+    }
+
+    <!-- Plan cards -->
+    @if (loading()) {
+      <div class="plans-grid">
+        @for (_ of [1,2,3]; track $index) {
+          <div class="plan-card plan-card--skeleton"></div>
+        }
+      </div>
+    } @else {
+      <div class="plans-grid">
+        @for (plan of sortedPlans(); track plan.id) {
+          <div
+            class="plan-card"
+            [class.plan-card--selected]="selectedPlan()?.id === plan.id"
+            [class.plan-card--current]="isCurrentPlan(plan)"
+            [class.plan-card--pro]="plan.planType === 'PRO'"
+            [class.plan-card--premium]="plan.planType === 'PREMIUM'"
+            (click)="selectPlan(plan)"
+          >
+            <!-- Plan type badge -->
+            <div class="plan-card__badge" [ngClass]="planBadge(plan.planType)">
+              {{ plan.planType }}
+            </div>
+
+            @if (plan.planType === 'PRO') {
+              <div class="plan-card__popular">⭐ Más popular</div>
+            }
+
+            <h3 class="plan-card__name">{{ plan.name }}</h3>
+            <p class="plan-card__description">{{ plan.description }}</p>
+
+            <div class="plan-card__price">
+              @if (plan.price === 0) {
+                <span class="price-amount">Gratis</span>
+              } @else {
+                <span class="price-currency">$</span>
+                <span class="price-amount">{{ plan.price | number:'1.2-2' }}</span>
+                <span class="price-period">/ {{ plan.durationDays }} días</span>
+              }
+            </div>
+
+            <ul class="plan-card__features">
+              @for (f of plan.features; track $index) {
+                <li>
+                  <span class="material-symbols-outlined">check</span>
+                  {{ f }}
+                </li>
+              }
+            </ul>
+
+            @if (isCurrentPlan(plan)) {
+              <div class="plan-card__cta plan-card__cta--current">
+                <span class="material-symbols-outlined">verified</span> Plan actual
+              </div>
+            } @else {
+              <button class="plan-card__cta" [class.plan-card__cta--selected]="selectedPlan()?.id === plan.id">
+                {{ selectedPlan()?.id === plan.id ? 'Seleccionado ✓' : 'Seleccionar' }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Subscription panel (visible when a plan is selected) -->
+    @if (selectedPlan(); as plan) {
+      <div class="subscribe-panel al-section-card">
+        <div class="subscribe-panel__header">
+          <h3>Confirmar suscripción — {{ plan.name }}</h3>
+          <button class="close-btn" (click)="selectPlan(plan)">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <!-- Coupon section -->
+        <div class="coupon-section">
+          <label class="coupon-label">
+            <span class="material-symbols-outlined">local_activity</span>
+            Cupón de descuento
+            <em>(opcional — solo aplica para el plan {{ plan.planType }})</em>
+          </label>
+          <div class="coupon-row">
+            <input
+              type="text"
+              class="coupon-input"
+              placeholder="Ej. PROMO20"
+              [(ngModel)]="couponCode"
+              (input)="onCouponInput()"
+            />
+            <button
+              class="coupon-btn"
+              [disabled]="!couponCode() || validatingCoupon()"
+              (click)="validateCoupon()"
+            >
+              @if (validatingCoupon()) {
+                <span class="spinner"></span>
+              } @else {
+                Aplicar
+              }
+            </button>
+          </div>
+
+          @if (couponResult(); as c) {
+            <div class="coupon-result" [class.coupon-result--valid]="c.valid" [class.coupon-result--invalid]="!c.valid">
+              <span class="material-symbols-outlined">{{ c.valid ? 'check_circle' : 'cancel' }}</span>
+              <span>{{ c.message }}</span>
+              @if (c.valid) {
+                <strong class="discount-tag">{{ discountLabel(c) }}</strong>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Price summary -->
+        <div class="price-summary">
+          <div class="price-row">
+            <span>Precio base</span>
+            <span>${{ plan.price | number:'1.2-2' }}</span>
+          </div>
+          @if (couponResult()?.valid) {
+            <div class="price-row price-row--discount">
+              <span>Descuento ({{ couponCode() }})</span>
+              <span>{{ discountLabel(couponResult()!) }}</span>
+            </div>
+          }
+          <div class="price-row price-row--total">
+            <span>Total</span>
+            <span>${{ finalPrice() | number:'1.2-2' }}</span>
+          </div>
+          @if (plan.durationDays > 0) {
+            <p class="validity-note">
+              <span class="material-symbols-outlined">schedule</span>
+              Válido por {{ plan.durationDays }} días desde hoy.
+            </p>
+          }
+        </div>
+
+        <button
+          class="al-btn al-btn--primary subscribe-btn"
+          [disabled]="submitting()"
+          (click)="confirm()"
+        >
+          @if (submitting()) {
+            <span class="spinner"></span> Procesando...
+          } @else {
+            <span class="material-symbols-outlined">done_all</span>
+            Confirmar suscripción
+          }
+        </button>
+      </div>
+    }
+
+  </div>
+</main>

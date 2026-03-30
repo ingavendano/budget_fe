@@ -1,0 +1,116 @@
+/* Budget Component Styles (Inherited from Architectural Ledger) */
+
+.al-summary-card {
+  padding: 32px;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  color: white;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.al-summary-card.primary {
+  background: var(--al-gradient-premium);
+}
+
+.al-summary-bg-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 0% 100%, rgba(255,255,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.al-summary-content {
+  position: relative;
+  z-index: 10;
+}
+
+.al-summary-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+  margin-bottom: 24px;
+}
+
+.al-summary-main {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.al-summary-sublabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.al-summary-value {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+/* Glass Button */
+.al-btn-glass {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.al-btn-glass:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}
+
+.al-amount-text {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--al-primary);
+}
+
+.al-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--al-on-surface-variant);
+  opacity: 0.7;
+}
+
+.al-empty-state .material-symbols-outlined {
+  font-size: 48px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.al-full-width-card {
+  grid-column: 1 / -1;
+}
+
+.al-badge {
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

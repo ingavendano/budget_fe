@@ -1,0 +1,169 @@
+<div class="goals-container">
+  
+  <div class="goals-grid-section">
+    <div class="section-header">
+      <h2 class="section-title">Metas de Ahorro</h2>
+      <button class="add-btn" (click)="navigate('/savings-goals/new')">
+        <span class="material-symbols-outlined">add</span>
+        Nueva Meta
+      </button>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="grid-skeleton">
+        @for (i of [1,2,3]; track i) {
+          <div class="skeleton-card"></div>
+        }
+      </div>
+    }
+
+    <!-- Content -->
+    @if (!loading() && goals().length > 0) {
+      <div class="goals-grid">
+        @for (goal of processedGoals(); track goal.id) {
+          <div class="goal-card" 
+               [class.active]="selectedGoal()?.id === goal.id"
+               [class]="'goal-card--' + goal.status"
+               (click)="selectGoal(goal.id)">
+            
+            <div class="goal-card__icon">{{ goal.icon || '💰' }}</div>
+            
+            <div class="goal-card__content">
+              <div class="goal-card__header">
+                <span class="goal-name">{{ goal.name }}</span>
+                <span class="goal-status-badge" [class]="'badge--' + goal.status">
+                  {{ goal.status === 'completed' ? 'Completada' : 
+                     goal.status === 'overdue' ? 'Vencida' :
+                     goal.status === 'at-risk' ? 'En riesgo' : 'Al día' }}
+                </span>
+              </div>
+              
+              <div class="goal-card__progress">
+                <div class="progress-info">
+                  <span class="amount">${{ goal.currentAmount | number:'1.2-2' }}</span>
+                  <span class="percent">{{ goal.progressPercent | number:'1.0-0' }}%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" [style.width.%]="goal.progressPercent"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SVG Ring for visual flair -->
+            <div class="goal-card__ring">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="circle" 
+                      [style.stroke-dasharray]="goal.progressPercent + ', 100'"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!loading() && goals().length === 0) {
+      <div class="empty-state">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        <h3>Aún no tienes metas</h3>
+        <p>Define tus objetivos financieros para empezar a ahorrar hoy mismo.</p>
+        <button (click)="navigate('/savings-goals/new')">Crear mi primera meta</button>
+      </div>
+    }
+  </div>
+
+  <!-- Detail Panel -->
+  <aside class="detail-panel" *ngIf="selectedGoal() as goal">
+    <div class="panel-header">
+      <div class="panel-icon">{{ goal.icon || '💰' }}</div>
+      <div class="panel-title-group">
+        <h3>{{ goal.name }}</h3>
+        <p>{{ goal.description || 'Sin descripción' }}</p>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-label">Meta Total</span>
+        <span class="stat-value">${{ goal.targetAmount | number:'1.2-2' }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Ahorrado</span>
+        <span class="stat-value text-success">${{ goal.currentAmount | number:'1.2-2' }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Faltante</span>
+        <span class="stat-value text-muted">${{ goal.remainingAmount | number:'1.2-2' }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Fecha Límite</span>
+        <span class="stat-value">{{ goal.deadline | date:'mediumDate' }}</span>
+      </div>
+    </div>
+
+    <!-- Strategy Section -->
+    <div class="panel-section">
+      <h4 class="section-subtitle">Estrategia de aporte</h4>
+      <div class="strategy-card">
+        <div class="strategy-item">
+          <div class="item-left">
+            <span class="label">Aporte mensual necesario</span>
+            <span class="value">${{ goal.requiredMonthly | number:'1.2-2' }}</span>
+          </div>
+          <div class="item-right" [class.text-danger]="goal.status === 'at-risk'">
+            <span class="label">Tu aporte promedio</span>
+            <span class="value">${{ goal.monthlyContribution | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        
+        <div class="strategy-warning" *ngIf="goal.status === 'at-risk'">
+          <span class="material-symbols-outlined">warning</span>
+          <p>Debes aumentar tu aporte en <b>${{ (goal.requiredMonthly - goal.monthlyContribution) | number:'1.2-2' }}</b> para llegar a tiempo.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projection Section -->
+    <div class="panel-section">
+      <h4 class="section-subtitle">Proyección estimada</h4>
+      <div class="projection-info" [class]="'proj--' + goal.status">
+        <div class="proj-header">
+          <span class="material-symbols-outlined">event_available</span>
+          @if (goal.status === 'completed') {
+            <span>¡Meta completada! 🎉</span>
+          } @else if (goal.projectedDate) {
+            <span>{{ goal.projectedDate | date:'MMMM yyyy' }}</span>
+          } @else {
+            <span>Sin aporte registrado</span>
+          }
+        </div>
+        
+        @if (goal.monthsBehind > 0 && goal.status !== 'completed') {
+          <div class="proj-delay">
+            <span class="material-symbols-outlined">schedule</span>
+            <span>Retraso de {{ goal.monthsBehind | number:'1.1-1' }} meses vs límite</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="panel-actions">
+      <button class="primary-btn" (click)="navigate('/savings-goals/' + goal.publicId + '/deposit')">
+        <span class="material-symbols-outlined">payments</span>
+        Abonar a la meta
+      </button>
+      <div class="secondary-btns">
+        <button class="outline-btn" (click)="navigate('/savings-goals/' + goal.publicId + '/edit')">
+          <span class="material-symbols-outlined">edit</span>
+          Editar
+        </button>
+      </div>
+    </div>
+  </aside>
+
+</div>

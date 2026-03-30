@@ -1,0 +1,68 @@
+<main class="al-main-content">
+  <header class="al-page-header">
+    <div class="al-header-left">
+      <h2 class="al-page-title">Perfil de Usuario</h2>
+      <p class="al-page-subtitle">Gestiona tu información personal y preferencias de cuenta.</p>
+    </div>
+  </header>
+
+  <div class="al-dashboard-grid" style="grid-template-columns: 1fr; gap: 32px; max-width: 800px; margin: 0 auto;">
+    <!-- Left Column: General Data -->
+    <div class="al-content-column">
+      <div class="al-section-card">
+        <div class="al-section-header-row">
+          <div class="al-section-title-group">
+            <span class="al-section-icon material-symbols-outlined">person</span>
+            <h3 class="al-section-title">Datos Generales</h3>
+          </div>
+        </div>
+
+        <div class="al-form-grid" style="margin-top: 24px;">
+          <div class="al-field-group">
+            <label class="al-label">Nombre Completo</label>
+            <input class="al-input" type="text" [ngModel]="name()" (ngModelChange)="name.set($event)" placeholder="Tu nombre">
+          </div>
+          
+          <div class="al-field-group" style="margin-top: 16px;">
+            <label class="al-label">Correo Electrónico (No editable)</label>
+            <input class="al-input" type="email" [value]="profile()?.email" disabled style="opacity: 0.6; cursor: not-allowed;">
+          </div>
+
+          <div class="al-field-group" style="margin-top: 16px;">
+            <label class="al-label">Teléfono / WhatsApp</label>
+            <input class="al-input" type="tel" [ngModel]="phoneNumber()" (ngModelChange)="phoneNumber.set($event)" 
+                   mask="0000-0000" placeholder="0000-0000">
+          </div>
+
+          <div class="al-field-group" style="margin-top: 24px;">
+            <label class="al-label">Paleta de Colores Corporativa</label>
+            <div class="theme-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 12px;">
+              <div class="theme-option" [class.active]="preferredTheme() === 'DEFAULT'" (click)="setTheme('DEFAULT')">
+                <div class="theme-preview" style="background: #004b50;"></div>
+                <span>Deep Teal (Default)</span>
+              </div>
+              <div class="theme-option" [class.active]="preferredTheme() === 'PURPLE'" (click)="setTheme('PURPLE')">
+                <div class="theme-preview" style="background: #4527a0;"></div>
+                <span>Royal Purple</span>
+              </div>
+              <div class="theme-option" [class.active]="preferredTheme() === 'SLATE'" (click)="setTheme('SLATE')">
+                <div class="theme-preview" style="background: #37474f;"></div>
+                <span>Slate Midnight</span>
+              </div>
+              <div class="theme-option" [class.active]="preferredTheme() === 'EMERALD'" (click)="setTheme('EMERALD')">
+                <div class="theme-preview" style="background: #1b5e20;"></div>
+                <span>Emerald Forest</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="al-section-footer" style="margin-top: 32px; border-top: 1px solid var(--al-surface-container-high); padding-top: 24px;">
+          <button class="al-btn-primary" (click)="updateProfile()" style="padding: 12px 40px;">
+            Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

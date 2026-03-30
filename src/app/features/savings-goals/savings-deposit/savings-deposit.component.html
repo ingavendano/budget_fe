@@ -1,0 +1,54 @@
+<div class="deposit-container">
+  <div class="deposit-card" *ngIf="goal() as g">
+    <header class="deposit-header">
+      <button class="back-btn" routerLink="/savings-goals">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div class="header-text">
+        <h2 class="title">Abonar a la meta</h2>
+        <p class="subtitle">{{ g.name }}</p>
+      </div>
+      <div class="goal-icon">{{ g.icon }}</div>
+    </header>
+
+    <div class="deposit-content">
+      <div class="current-status">
+        <div class="status-item">
+          <span class="label">Ahorrado</span>
+          <span class="value">${{ g.currentAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Meta</span>
+          <span class="value">${{ g.targetAmount | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="input-section">
+        <label class="input-label">Monto a depositar</label>
+        <div class="amount-input-wrapper">
+          <span class="currency">$</span>
+          <input type="number" 
+                 class="amount-input" 
+                 [(ngModel)]="amount" 
+                 placeholder="0.00"
+                 autofocus>
+        </div>
+        <p class="input-hint">El dinero se sumará a tus ahorros actuales.</p>
+      </div>
+
+      <div class="deposit-actions">
+        <button class="cancel-btn" routerLink="/savings-goals">Cancelar</button>
+        <button class="confirm-btn" [disabled]="loading() || amount() <= 0" (click)='confirm()'>
+          {{ loading() ? 'Procesando...' : 'Confirmar Abono' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading() && !goal()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando información de la meta...</p>
+    </div>
+  }
+</div>

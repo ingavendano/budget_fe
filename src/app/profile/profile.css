@@ -1,0 +1,54 @@
+.al-radio-item input[type="radio"] {
+  accent-color: var(--al-primary);
+  width: 18px;
+  height: 18px;
+}
+
+.al-radio-item span {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--al-on-surface);
+}
+
+.plan-status-badge h2 {
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.info-row {
+  padding: 4px 0;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--al-surface-container-low);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-option:hover {
+  background: var(--al-surface-container-high);
+}
+
+.theme-option.active {
+  border-color: var(--al-primary);
+  background: var(--al-secondary-container);
+}
+
+.theme-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.theme-option span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--al-on-surface);
+}

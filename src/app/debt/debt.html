@@ -1,0 +1,192 @@
+<main class="al-main-content">
+  <header class="al-page-header">
+    <div class="al-header-left">
+      <h2 class="al-page-title">Control de deudas</h2>
+      <p class="al-page-subtitle">Registra préstamos, tarjetas y visualiza tu progreso con estrategias inteligentes.</p>
+    </div>
+    <div class="al-header-right">
+      <button class="al-btn-primary" (click)="showForm.set(!showForm())" style="padding: 12px 24px; border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+        <span class="material-symbols-outlined">{{ showForm() ? 'close' : 'add' }}</span>
+        <span>{{ showForm() ? 'Cancelar' : 'Nueva Deuda' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Summary Cards & Strategy Selector -->
+  <div style="display: flex; flex-direction: column; gap: 32px; margin-bottom: 48px;">
+    <div class="al-summary-row">
+      <div class="al-stat-card">
+        <span class="al-stat-label">Deuda Total Pendiente</span>
+        <span class="al-stat-value" style="color: #ba1a1a;">{{ totalPendingDebt() | currency }}</span>
+      </div>
+      <div class="al-stat-card">
+        <span class="al-stat-label">Cuotas Mensuales</span>
+        <span class="al-stat-value" style="color: #ea6d00;">{{ totalMonthlyInstallments() | currency }}</span>
+      </div>
+      <div class="al-stat-card">
+        <span class="al-stat-label">Deudas Activas</span>
+        <span class="al-stat-value">{{ activeDebtsCount() }}</span>
+      </div>
+    </div>
+
+    <!-- Strategy Selector -->
+    <div class="al-strategy-panel">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span class="material-symbols-outlined" style="color: var(--al-primary); font-size: 24px;">psychology_alt</span>
+        <div>
+          <span style="display: block; font-weight: 800; font-size: 15px; color: #1a1a1a;">Estrategia de Optimización</span>
+          <span style="display: block; font-size: 12px; color: #73726c;">Prioriza tus pagos para salir de deudas más rápido.</span>
+        </div>
+      </div>
+      <div style="display: flex; background: #f0f0f0; padding: 6px; border-radius: 16px; gap: 6px;">
+        <button 
+          (click)="strategy.set('SNOWBALL')"
+          [style.background]="strategy() === 'SNOWBALL' ? '#fff' : 'transparent'"
+          [style.box-shadow]="strategy() === 'SNOWBALL' ? '0 4px 12px rgba(0,0,0,0.08)' : 'none'"
+          [style.color]="strategy() === 'SNOWBALL' ? 'var(--al-primary)' : '#73726c'"
+          style="border: none; padding: 10px 24px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.3s;"
+        >
+          Bola de Nieve
+        </button>
+        <button 
+          (click)="strategy.set('AVALANCHE')"
+          [style.background]="strategy() === 'AVALANCHE' ? '#fff' : 'transparent'"
+          [style.box-shadow]="strategy() === 'AVALANCHE' ? '0 4px 12px rgba(0,0,0,0.08)' : 'none'"
+          [style.color]="strategy() === 'AVALANCHE' ? 'var(--al-primary)' : '#73726c'"
+          style="border: none; padding: 10px 24px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.3s;"
+        >
+          Avalancha
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registration Form (Toggleable) -->
+  <div class="al-section-card" *ngIf="showForm()" style="margin-bottom: 48px; border: 2px solid var(--al-primary-container);">
+    <div class="al-section-header-row">
+      <div class="al-section-title-group" style="display: flex; align-items: center; gap: 12px;">
+        <span class="al-section-icon material-symbols-outlined" style="color: var(--al-primary);">edit_square</span>
+        <h3 class="al-section-title" style="margin: 0; font-size: 20px; font-weight: 800;">{{ editId() ? 'Editar deuda' : 'Nueva deuda' }}</h3>
+      </div>
+    </div>
+
+    <div class="al-form-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 32px;">
+      <div class="al-field-group">
+        <label class="al-label">Nombre de la deuda</label>
+        <input class="al-input" type="text" [ngModel]="name()" (ngModelChange)="name.set($event)"
+               placeholder="Ej. Visa Oro, Crédito Personal">
+      </div>
+      <div class="al-field-group">
+        <label class="al-label">Monto Total ($)</label>
+        <input class="al-input" type="number" [ngModel]="totalAmount()" (ngModelChange)="totalAmount.set($event)"
+               placeholder="0.00">
+      </div>
+      <div class="al-field-group">
+        <label class="al-label">Cuota Mensual Actual ($)</label>
+        <input class="al-input" type="number" [ngModel]="monthlyInstallment()" (ngModelChange)="monthlyInstallment.set($event)"
+               placeholder="0.00">
+      </div>
+      <div class="al-field-group">
+        <label class="al-label">Tasa de Interés Anual (%)</label>
+        <input class="al-input" type="number" [ngModel]="interestRate()" (ngModelChange)="interestRate.set($event)"
+               placeholder="0.00">
+      </div>
+      <div class="al-field-group">
+        <label class="al-label">Pago Mínimo Requerido ($)</label>
+        <input class="al-input" type="number" [ngModel]="minimumPayment()" (ngModelChange)="minimumPayment.set($event)"
+               placeholder="0.00">
+      </div>
+      <div class="al-field-group">
+        <label class="al-label">Descripción / Notas</label>
+        <input class="al-input" type="text" [ngModel]="description()" (ngModelChange)="description.set($event)"
+               placeholder="Ej. Banco Santander - 12 meses">
+      </div>
+    </div>
+
+    <div class="al-form-actions" style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 40px; padding-top: 32px; border-top: 1px solid #f0f0f0;">
+      <button class="al-btn-secondary" (click)="resetForm()" style="padding: 12px 32px; border-radius: 12px; font-weight: 700;">
+        Cancelar
+      </button>
+      <button class="al-btn-primary" (click)="saveDebt()" style="padding: 12px 48px; border-radius: 12px; font-weight: 700; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+        {{ editId() ? 'Actualizar Deuda' : 'Guardar Deuda' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Debts Grid -->
+  <div class="al-debts-grid">
+    <div class="al-goal-card" 
+         *ngFor="let debt of sortedDebts()" 
+         [class.al-goal-card--target]="debt === nextTarget() && activeDebtsCount() > 0"
+    >
+      <!-- Highlight for Target -->
+      <div *ngIf="debt === nextTarget() && activeDebtsCount() > 0" class="al-target-badge">
+        SIGUIENTE OBJETIVO
+      </div>
+
+      <div class="al-goal-header">
+        <div class="al-goal-info">
+          <h4 class="al-goal-name">{{ debt.name }}</h4>
+          <p class="al-goal-desc">{{ debt.description || 'Sin notas adicionales' }}</p>
+        </div>
+        <div class="al-goal-actions">
+           <button class="al-icon-btn" (click)="editDebt(debt)" title="Editar">
+             <span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+           </button>
+        </div>
+      </div>
+
+      <div class="al-debt-details">
+        <div class="al-stat-item">
+          <span class="al-stat-item-label">Saldo Pendiente</span>
+          <span class="al-stat-item-value" style="color: #ba1a1a;">{{ debt.currentBalance | currency }}</span>
+        </div>
+        <div class="al-stat-item" style="text-align: right;">
+          <span class="al-stat-item-label">Interés Anual</span>
+          <span class="al-stat-item-value" style="color: var(--al-primary);">{{ debt.interestRate }}%</span>
+        </div>
+        <div class="al-stat-item">
+          <span class="al-stat-item-label">Pago Mínimo</span>
+          <span class="al-stat-item-value" style="color: #ea6d00;">{{ debt.minimumPayment | currency }}</span>
+        </div>
+        <div class="al-stat-item" style="text-align: right;">
+          <span class="al-stat-item-label">Cuota Mensual</span>
+          <span class="al-stat-item-value" style="color: #ea6d00;">{{ debt.monthlyInstallment | currency }}</span>
+        </div>
+      </div>
+
+      <div class="al-progress-container">
+        <div class="al-progress-header">
+          <span>Progreso de Pago</span>
+          <span [style.color]="'var(--al-primary)'">{{ getProgress(debt) }}%</span>
+        </div>
+        <div class="al-progress-bar">
+          <div class="al-progress-fill" [style.width.%]="getProgress(debt)"></div>
+        </div>
+        <div class="al-progress-footer">
+          Pagado: <strong>{{ getPaidAmount(debt) | currency }}</strong> de {{ debt.totalAmount | currency }}
+        </div>
+      </div>
+
+      <div class="al-card-footer">
+        <button class="al-btn-light full-width" (click)="recordPayment(debt)">
+          <span class="material-symbols-outlined">payments</span>
+          <span>Registrar Abono</span>
+        </button>
+        <button class="al-icon-btn danger" (click)="deleteDebt(debt.id)" title="Eliminar">
+          <span class="material-symbols-outlined">delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="debts().length === 0" class="al-empty-state">
+    <span class="material-symbols-outlined" style="font-size: 80px; opacity: 0.3;">account_balance</span>
+    <h3>No hay deudas registradas</h3>
+    <p>Comienza registrando tus préstamos o tarjetas para optimizar tus pagos.</p>
+    <button class="al-btn-primary" (click)="showForm.set(true)" style="margin-top: 24px; padding: 12px 32px; border-radius: 12px; font-weight: 700;">
+      Añadir mi primera deuda
+    </button>
+  </div>
+</main>
