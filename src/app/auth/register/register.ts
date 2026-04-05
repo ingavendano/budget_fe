@@ -65,7 +65,8 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.error.set(err.error || 'Ocurrió un error al registrar el usuario.');
+        const msg = err.error?.message || err.error?.error || (typeof err.error === 'string' ? err.error : null) || 'Ocurrió un error al registrar el usuario.';
+        this.error.set(msg);
       }
     });
   }
