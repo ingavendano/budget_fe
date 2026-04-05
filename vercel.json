@@ -5,6 +5,10 @@
   "installCommand": "npm ci --legacy-peer-deps",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "http://146.235.238.78:8080/:path*"
+    },
+    {
       "source": "/((?!env\\.js$).*)",
       "destination": "/index.html"
     }
