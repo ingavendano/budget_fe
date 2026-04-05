@@ -42,3 +42,7 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment — NUNCA versionar archivos con credenciales reales
+.env
+# .env.example SÍ está versionado (es solo una plantilla sin valores reales)
