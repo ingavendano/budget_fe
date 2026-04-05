@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   register(userData: any) {
-    return this.http.post(`${this.apiUrl}/signup`, userData);
+    return this.http.post(`${this.apiUrl}/signup`, userData, { responseType: 'text' });
   }
 
   logout() {
