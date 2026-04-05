@@ -4,13 +4,13 @@
     <div class="nav-content">
       <div class="logo">
         <span class="material-symbols-outlined">account_balance_wallet</span>
-        <span>Budget</span>
+        <span>Necuiltonolli</span>
       </div>
       <div class="nav-links">
         <a href="#features">Características</a>
-        <a href="#showcase">Galería</a>
+        <a href="#pricing">Planes</a>
         <button class="btn-primary-outline" routerLink="/login">Iniciar Sesión</button>
-        <button class="btn-primary" routerLink="/login">Empezar Gratis</button>
+        <button class="btn-primary" routerLink="/register">Empezar Gratis</button>
       </div>
     </div>
   </nav>
@@ -22,12 +22,13 @@
       <div class="hero-text">
         <span class="badge">NUEVA ERA FINANCIERA</span>
         <h1>Domina tus Finanzas con <br><span class="highlight">Precisión Arquitectónica</span></h1>
-        <p>Gestiona, proyecta y audita tu patrimonio con una interfaz diseñada para la excelencia. Olvida las hojas de cálculo aburridas y abraza el futuro del presupuesto inteligente.</p>
+        <p>Gestiona, proyecta y audita tu patrimonio con una interfaz diseñada para la excelencia. Olvida las hojas de
+          cálculo aburridas y abraza el futuro del presupuesto inteligente.</p>
         <div class="cta-group">
-          <button class="btn-cta-primary" routerLink="/login">Comenzar Ahora</button>
-          <button class="btn-cta-secondary">
-            <span class="material-symbols-outlined">play_circle</span>
-            Ver Demo
+          <button class="btn-cta-primary" routerLink="/register">Comenzar Ahora</button>
+          <button class="btn-cta-secondary" (click)="scrollTo('pricing')">
+            <span class="material-symbols-outlined">payments</span>
+            Ver Planes
           </button>
         </div>
       </div>
@@ -59,7 +60,7 @@
       <h2>Diseñado para el Control Total</h2>
       <p>Nuestra plataforma combina la simplicidad que necesitas con la potencia que exiges.</p>
     </div>
-    
+
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">
@@ -68,7 +69,7 @@
         <h3>Plantillas Inteligentes</h3>
         <p>Proyecta tus gastos mensuales en segundos. Importación masiva que te ahorra horas de registro manual.</p>
       </div>
-      
+
       <div class="feature-card">
         <div class="feature-icon">
           <span class="material-symbols-outlined">track_changes</span>
@@ -76,7 +77,7 @@
         <h3>Metas de Ahorro</h3>
         <p>Visualiza tu camino hacia el éxito financiero con barras de progreso intuitivas y recordatorios inteligentes.</p>
       </div>
-      
+
       <div class="feature-card">
         <div class="feature-icon">
           <span class="material-symbols-outlined">security</span>
@@ -84,7 +85,7 @@
         <h3>Arquitectura Multi-tenant</h3>
         <p>Tus datos son solo tuyos. Aislamiento total a nivel de base de datos para máxima privacidad y seguridad.</p>
       </div>
-      
+
       <div class="feature-card">
         <div class="feature-icon">
           <span class="material-symbols-outlined">cloud_sync</span>
@@ -95,18 +96,110 @@
     </div>
   </section>
 
+  <!-- Pricing Section -->
+  <section id="pricing" class="pricing-section">
+    <div class="section-header">
+      <span class="section-badge">PLANES Y PRECIOS</span>
+      <h2>Elige el plan ideal para ti</h2>
+      <p>Sin contratos. Sin sorpresas. Cancela cuando quieras.</p>
+    </div>
+
+    <!-- Loading skeleton -->
+    @if (isLoadingPlans()) {
+      <div class="pricing-grid">
+        @for (i of [1,2,3]; track i) {
+          <div class="plan-card skeleton-card">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-price"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line short"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-btn"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Plans loaded -->
+    @if (!isLoadingPlans()) {
+      <div class="pricing-grid">
+        @for (plan of plans(); track plan.id) {
+          <div class="plan-card" [class.plan-featured]="isPro(plan)">
+            @if (isPro(plan)) {
+              <div class="plan-badge-popular">⭐ Más Popular</div>
+            }
+            <div class="plan-header">
+              <div class="plan-icon" [class.plan-icon-featured]="isPro(plan)">
+                <span class="material-symbols-outlined">{{ planIcons[plan.planType] || 'star' }}</span>
+              </div>
+              <h3 class="plan-name">{{ plan.name }}</h3>
+              <p class="plan-description">{{ plan.description }}</p>
+            </div>
+
+            <div class="plan-price">
+              @if (plan.price === 0) {
+                <span class="price-amount">Gratis</span>
+              } @else {
+                <span class="price-currency">$</span>
+                <span class="price-amount">{{ plan.price | number:'1.0-0' }}</span>
+                <span class="price-period">MXN/{{ plan.durationDays >= 365 ? 'año' : 'mes' }}</span>
+              }
+            </div>
+
+            <ul class="plan-features">
+              @for (feature of plan.features; track feature) {
+                <li>
+                  <span class="material-symbols-outlined feature-check">check_circle</span>
+                  {{ feature }}
+                </li>
+              }
+              @if (plan.maxIncomeCategories) {
+                <li>
+                  <span class="material-symbols-outlined feature-check">check_circle</span>
+                  Hasta {{ plan.maxIncomeCategories }} categorías de ingreso
+                </li>
+              }
+              @if (!plan.maxIncomeCategories) {
+                <li>
+                  <span class="material-symbols-outlined feature-check">all_inclusive</span>
+                  Categorías de ingreso ilimitadas
+                </li>
+              }
+              @if (plan.maxExpenseCategories) {
+                <li>
+                  <span class="material-symbols-outlined feature-check">check_circle</span>
+                  Hasta {{ plan.maxExpenseCategories }} categorías de gasto
+                </li>
+              }
+              @if (!plan.maxExpenseCategories) {
+                <li>
+                  <span class="material-symbols-outlined feature-check">all_inclusive</span>
+                  Categorías de gasto ilimitadas
+                </li>
+              }
+            </ul>
+
+            <button class="plan-cta" [class.plan-cta-featured]="isPro(plan)" routerLink="/register">
+              {{ plan.price === 0 ? 'Empezar Gratis' : 'Elegir Plan' }}
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
   <!-- CTA Bottom -->
   <section class="final-cta">
     <div class="cta-box">
       <h2>¿Listo para el siguiente nivel?</h2>
       <p>Únete a miles de usuarios que ya han transformado su relación con el dinero.</p>
-      <button class="btn-cta-primary-large" routerLink="/login">Únete a Budget Hoy</button>
+      <button class="btn-cta-primary-large" routerLink="/register">Únete a Necuiltonolli Hoy</button>
     </div>
   </section>
 
   <footer class="landing-footer">
     <div class="footer-bottom">
-      <p>&copy; 2026 Budget App. Diseñado con ❤️ para la excelencia financiera.</p>
+      <p>&copy; 2026 Necuiltonolli. Diseñado con ❤️ para la excelencia financiera.</p>
     </div>
   </footer>
 </div>
