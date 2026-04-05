@@ -33,4 +33,4 @@ const outputPath = path.resolve(__dirname, '../src/environments/environment.prod
 fs.writeFileSync(outputPath, content);
 
 console.log('✅ environment.prod.ts generado correctamente.');
-console.log(\`   apiUrl = \${apiUrl}\`);
+console.log('   apiUrl = ' + apiUrl);
