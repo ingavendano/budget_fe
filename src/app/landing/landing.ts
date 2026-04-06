@@ -69,4 +69,11 @@ export class LandingPageComponent implements OnInit {
     const period = durationDays >= 365 ? '/año' : '/mes';
     return `$${price.toFixed(2)} MXN${period}`;
   }
+
+  scrollTo(sectionId: string) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
