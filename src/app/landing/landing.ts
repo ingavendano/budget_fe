@@ -67,7 +67,7 @@ export class LandingPageComponent implements OnInit {
   formatPrice(price: number, durationDays: number): string {
     if (price === 0) return 'Gratis';
     const period = durationDays >= 365 ? '/año' : '/mes';
-    return `$${price.toFixed(2)} MXN${period}`;
+    return `$${price.toFixed(2)} USD${period}`;
   }
 
   scrollTo(sectionId: string) {

@@ -142,7 +142,7 @@
               } @else {
                 <span class="price-currency">$</span>
                 <span class="price-amount">{{ plan.price | number:'1.0-0' }}</span>
-                <span class="price-period">MXN/{{ plan.durationDays >= 365 ? 'año' : 'mes' }}</span>
+                <span class="price-period">USD/{{ plan.durationDays >= 365 ? 'año' : 'mes' }}</span>
               }
             </div>
 
