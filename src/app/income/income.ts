@@ -22,7 +22,7 @@ export class Income implements OnInit {
   allTaxes = signal<IncomeTax[]>([]);
   isrBrackets = signal<IsrBracket[]>([]);
   incomes = signal<IncomeEntry[]>([]);
-  
+
   // Selection and Input
   selectedCategoryId = signal<number | string | null>(null);
   description = signal<string>('');
@@ -31,7 +31,7 @@ export class Income implements OnInit {
   publicId = signal<string>('');
 
   // Summary Metrics
-  monthlyBudget = 14200.00; // As per Stitch design or user preference
+  monthlyBudget = 0.00; // As per Stitch design or user preference
   totalMonthlyIncome = computed(() => {
     return this.incomes().reduce((acc, curr) => acc + curr.grossAmount, 0);
   });
@@ -62,18 +62,19 @@ export class Income implements OnInit {
     // 1. Other taxes (ISSS, fixed percentage, etc.)
     catTaxes.forEach(tax => {
       if (tax.rangeTableRequired) return; // Skip ISR for first pass
-      
+
       const percentage = tax.percentage || 0;
       let taxAmount = 0;
-      
+
       if (tax.name.toUpperCase().includes('ISSS')) {
         const taxableBase = Math.min(currentAmount, 1000);
         taxAmount = taxableBase * (percentage / 100);
       } else {
         taxAmount = currentAmount * (percentage / 100);
       }
-      
+
       otherTaxesTotal += taxAmount;
+      console.log("Validación de Otros Impuestos", taxAmount);
       deductions.push({ name: tax.name, amount: taxAmount, isIsr: false });
     });
 
@@ -83,9 +84,12 @@ export class Income implements OnInit {
 
     if (isrTax) {
       const baseIsr = currentAmount - otherTaxesTotal;
-      const bracket = this.isrBrackets().find(b => 
+      const bracket = this.isrBrackets().find(b =>
         baseIsr >= b.lowerLimit && (!b.upperLimit || baseIsr <= b.upperLimit)
       );
+
+      console.log("Validación de Renta: ", bracket);
+      console.log("Validación de Base: ", baseIsr);
 
       if (bracket) {
         isrAmount = (baseIsr - (bracket.excess || 0)) * (bracket.applyPercentage / 100) + bracket.fixedFee;
