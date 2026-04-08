@@ -96,6 +96,17 @@ export interface SavingsGoal {
   currentAmount: number;
   deadline?: string;
   icon: string;
+  monthlyContribution?: number;
+  contributionDay?: number;
+}
+
+export interface SavingsGoalScheduleItem {
+  month: string;
+  year: number;
+  expectedDate: string;
+  expectedAmount: number;
+  actualAmount: number;
+  status: 'PAID' | 'PENDING' | 'LATE';
 }
 
 export interface TrendData {
@@ -272,11 +283,18 @@ export class ConfigService {
   }
 
   saveSavingsGoal(goal: SavingsGoal): Observable<SavingsGoal> {
-    return this.http.post<SavingsGoal>(this.savingsGoalUrl, goal);
+    if (goal.publicId) {
+      return this.http.put<SavingsGoal>(`${environment.apiUrl}/api/savings-goals/${goal.publicId}`, goal);
+    }
+    return this.http.post<SavingsGoal>(`${environment.apiUrl}/api/savings-goals`, goal);
   }
 
   getSavingsGoal(publicId: string): Observable<SavingsGoal> {
     return this.http.get<SavingsGoal>(`${this.savingsGoalUrl}/${publicId}`);
+  }
+
+  getSavingsGoalSchedule(publicId: string): Observable<SavingsGoalScheduleItem[]> {
+    return this.http.get<SavingsGoalScheduleItem[]>(`${environment.apiUrl}/api/savings-goals/${publicId}/schedule`);
   }
 
   depositToGoal(publicId: string, amount: number): Observable<SavingsGoal> {

@@ -27,6 +27,8 @@ export class SavingsGoalFormComponent implements OnInit {
   description = signal<string>('');
   targetAmount = signal<number>(0);
   deadline = signal<string>('');
+  monthlyContribution = signal<number>(0);
+  contributionDay = signal<number>(1);
 
   icons = ['🖼️', '🚗', '🏠', '🎓', '💍', '🌍', '💻', '🛡️', '🐷', '🎯', '✈️', '📱', '🎁', '🏗️', '🎸'];
 
@@ -48,6 +50,8 @@ export class SavingsGoalFormComponent implements OnInit {
         this.targetAmount.set(goal.targetAmount);
         this.deadline.set(goal.deadline || '');
         this.selectedIcon.set(goal.icon);
+        this.monthlyContribution.set(goal.monthlyContribution || 0);
+        this.contributionDay.set(goal.contributionDay || 1);
         this.loading.set(false);
       },
       error: () => {
@@ -70,7 +74,9 @@ export class SavingsGoalFormComponent implements OnInit {
       targetAmount: this.targetAmount(),
       currentAmount: 0, // Backend ignores this on update
       deadline: this.deadline() || undefined,
-      icon: this.selectedIcon()
+      icon: this.selectedIcon(),
+      monthlyContribution: this.monthlyContribution(),
+      contributionDay: this.contributionDay()
     };
 
     const request = this.isEdit() 

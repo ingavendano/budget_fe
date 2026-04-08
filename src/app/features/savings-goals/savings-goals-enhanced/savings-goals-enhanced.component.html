@@ -105,64 +105,115 @@
       </div>
     </div>
 
-    <!-- Strategy Section -->
-    <div class="panel-section">
-      <h4 class="section-subtitle">Estrategia de aporte</h4>
-      <div class="strategy-card">
-        <div class="strategy-item">
-          <div class="item-left">
-            <span class="label">Aporte mensual necesario</span>
-            <span class="value">${{ goal.requiredMonthly | number:'1.2-2' }}</span>
+    <!-- Strategy & Projection Group -->
+    <div class="panel-row">
+      <!-- Strategy Section -->
+      <div class="panel-section">
+        <h4 class="section-subtitle">Estrategia de aporte</h4>
+        <div class="strategy-card">
+          <div class="strategy-item">
+            <div class="item-left">
+              <span class="label">Aporte mensual necesario</span>
+              <span class="value">${{ dynamicRequiredMonthly() | number:'1.2-2' }}</span>
+            </div>
+            <div class="item-right" [class.text-danger]="goal.status === 'at-risk'">
+              <span class="label">Tu aporte promedio</span>
+              <span class="value">${{ goal.monthlyContribution | number:'1.2-2' }}</span>
+            </div>
           </div>
-          <div class="item-right" [class.text-danger]="goal.status === 'at-risk'">
-            <span class="label">Tu aporte promedio</span>
-            <span class="value">${{ goal.monthlyContribution | number:'1.2-2' }}</span>
+          
+          <div class="strategy-warning" *ngIf="goal.status === 'at-risk' && dynamicRequiredMonthly() > 0">
+            <span class="material-symbols-outlined">warning</span>
+            <p>Debes aumentar tu aporte en <b>${{ (dynamicRequiredMonthly() - goal.monthlyContribution) | number:'1.2-2' }}</b> para llegar a tiempo.</p>
           </div>
         </div>
-        
-        <div class="strategy-warning" *ngIf="goal.status === 'at-risk'">
-          <span class="material-symbols-outlined">warning</span>
-          <p>Debes aumentar tu aporte en <b>${{ (goal.requiredMonthly - goal.monthlyContribution) | number:'1.2-2' }}</b> para llegar a tiempo.</p>
+      </div>
+
+      <!-- Projection Section -->
+      <div class="panel-section">
+        <h4 class="section-subtitle">Proyección estimada</h4>
+        <div class="projection-info" [class]="'proj--' + goal.status">
+          <div class="proj-header">
+            <span class="material-symbols-outlined">event_available</span>
+            @if (goal.status === 'completed') {
+              <span>¡Meta completada! 🎉</span>
+            } @else if (goal.projectedDate) {
+              <span>{{ goal.projectedDate | date:'MMMM yyyy' }}</span>
+            } @else {
+              <span>Sin aporte registrado</span>
+            }
+          </div>
+          
+          @if (goal.monthsBehind > 0 && goal.status !== 'completed') {
+            <div class="proj-delay">
+              <span class="material-symbols-outlined">schedule</span>
+              <span>Retraso de {{ goal.monthsBehind | number:'1.1-1' }} meses vs límite</span>
+            </div>
+          }
         </div>
       </div>
     </div>
 
-    <!-- Projection Section -->
+    <!-- Schedule Section -->
     <div class="panel-section">
-      <h4 class="section-subtitle">Proyección estimada</h4>
-      <div class="projection-info" [class]="'proj--' + goal.status">
-        <div class="proj-header">
-          <span class="material-symbols-outlined">event_available</span>
-          @if (goal.status === 'completed') {
-            <span>¡Meta completada! 🎉</span>
-          } @else if (goal.projectedDate) {
-            <span>{{ goal.projectedDate | date:'MMMM yyyy' }}</span>
-          } @else {
-            <span>Sin aporte registrado</span>
-          }
+      <h4 class="section-subtitle">Cronograma de Ahorros</h4>
+      
+      @if (scheduleLoading()) {
+        <div class="schedule-loader">Cargando cronograma...</div>
+      } @else if (schedule().length > 0) {
+        <div class="schedule-table-wrapper">
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th>Fecha Abono</th>
+                <th>Cuota Abono</th>
+                <th>Valor Real Abono</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of schedule(); track $index) {
+                <tr>
+                  <td>{{ item.expectedDate | date:'yyyy-MM-dd' }}</td>
+                  <td>${{ item.expectedAmount | number:'1.2-2' }}</td>
+                  <td [class.text-success]="item.actualAmount >= item.expectedAmount"
+                      [class.text-warning]="item.actualAmount > 0 && item.actualAmount < item.expectedAmount">
+                    ${{ item.actualAmount | number:'1.2-2' }}
+                  </td>
+                  <td>
+                    <span class="status-dot" [class]="'dot--' + item.status.toLowerCase()"></span>
+                    <span class="status-text">{{ 
+                      item.status === 'PAID' ? 'Pagado' : 
+                      item.status === 'LATE' ? 'Atrasado' : 'Pendiente' 
+                    }}</span>
+                  </td>
+                </tr>
+              }
+              <!-- Total Row -->
+              <tr class="total-row">
+                <td><strong>Total</strong></td>
+                <td><strong>${{ totalExpected() | number:'1.2-2' }}</strong></td>
+                <td><strong>${{ totalActual() | number:'1.2-2' }}</strong></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        
-        @if (goal.monthsBehind > 0 && goal.status !== 'completed') {
-          <div class="proj-delay">
-            <span class="material-symbols-outlined">schedule</span>
-            <span>Retraso de {{ goal.monthsBehind | number:'1.1-1' }} meses vs límite</span>
-          </div>
-        }
-      </div>
+      } @else {
+        <p class="text-muted">No hay proyección disponible.</p>
+      }
     </div>
 
     <!-- Actions -->
     <div class="panel-actions">
+      <button class="outline-btn" (click)="navigate('/savings-goals/' + goal.publicId + '/edit')">
+        <span class="material-symbols-outlined">edit</span>
+        Editar Meta
+      </button>
       <button class="primary-btn" (click)="navigate('/savings-goals/' + goal.publicId + '/deposit')">
         <span class="material-symbols-outlined">payments</span>
         Abonar a la meta
       </button>
-      <div class="secondary-btns">
-        <button class="outline-btn" (click)="navigate('/savings-goals/' + goal.publicId + '/edit')">
-          <span class="material-symbols-outlined">edit</span>
-          Editar
-        </button>
-      </div>
     </div>
   </aside>
 

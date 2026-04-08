@@ -29,14 +29,16 @@
           <label class="field-label">Nombre de la meta</label>
           <input type="text" 
                  class="al-input" 
-                 [(ngModel)]="name" 
+                 [ngModel]="name()" 
+                 (ngModelChange)="name.set($event)"
                  placeholder="Ej. Fondo de Emergencia">
         </div>
 
         <div class="field-group">
           <label class="field-label">Descripción (Opcional)</label>
           <textarea class="al-input" 
-                    [(ngModel)]="description" 
+                    [ngModel]="description()" 
+                    (ngModelChange)="description.set($event)"
                     rows="2"
                     placeholder="¿Para qué es este ahorro?"></textarea>
         </div>
@@ -46,14 +48,28 @@
             <label class="field-label">Monto Meta ($)</label>
             <input type="number" 
                    class="al-input" 
-                   [(ngModel)]="targetAmount" 
+                   [ngModel]="targetAmount()" 
+                   (ngModelChange)="targetAmount.set($event)"
                    placeholder="0.00">
           </div>
           <div class="field-group">
             <label class="field-label">Fecha Límite</label>
             <input type="date" 
                    class="al-input" 
-                   [(ngModel)]="deadline">
+                   [ngModel]="deadline()"
+                   (ngModelChange)="deadline.set($event)">
+          </div>
+        </div>
+
+        <div class="row-fields">
+          <div class="field-group">
+            <label class="field-label">Día del Mes para Abono</label>
+            <input type="number" 
+                   class="al-input" 
+                   [ngModel]="contributionDay()"
+                   (ngModelChange)="contributionDay.set($event)"
+                   min="1" max="31"
+                   placeholder="1">
           </div>
         </div>
 

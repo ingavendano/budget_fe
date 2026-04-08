@@ -74,7 +74,7 @@ export class Income implements OnInit {
       }
 
       otherTaxesTotal += taxAmount;
-      console.log("Validación de Otros Impuestos", taxAmount);
+
       deductions.push({ name: tax.name, amount: taxAmount, isIsr: false });
     });
 
@@ -87,9 +87,6 @@ export class Income implements OnInit {
       const bracket = this.isrBrackets().find(b =>
         baseIsr >= b.lowerLimit && (!b.upperLimit || baseIsr <= b.upperLimit)
       );
-
-      console.log("Validación de Renta: ", bracket);
-      console.log("Validación de Base: ", baseIsr);
 
       if (bracket) {
         isrAmount = (baseIsr - (bracket.excess || 0)) * (bracket.applyPercentage / 100) + bracket.fixedFee;

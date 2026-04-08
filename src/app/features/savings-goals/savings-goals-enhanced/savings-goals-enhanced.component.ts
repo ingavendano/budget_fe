@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router, RouterModule } from '@angular/router';
+import { ConfigService } from '../../../config/config.service';
 
 interface SavingsGoal {
   id: number;
@@ -21,6 +22,16 @@ interface SavingsGoal {
   deadline: string;
   icon: string;
   monthlyContribution: number;
+  contributionDay: number;
+}
+
+interface ScheduleItem {
+  month: string;
+  year: number;
+  expectedDate: string;
+  expectedAmount: number;
+  actualAmount: number;
+  status: 'PAID' | 'PENDING' | 'LATE';
 }
 
 type GoalStatus = 'completed' | 'overdue' | 'at-risk' | 'on-track';
@@ -36,12 +47,45 @@ type GoalStatus = 'completed' | 'overdue' | 'at-risk' | 'on-track';
 export class SavingsGoalsEnhancedComponent {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private configService = inject(ConfigService);
 
   // State
   readonly loading = signal(true);
   readonly error   = signal<string | null>(null);
   readonly goals   = signal<SavingsGoal[]>([]);
   readonly selectedGoalId = signal<number | null>(null);
+  readonly schedule = signal<ScheduleItem[]>([]);
+  readonly scheduleLoading = signal(false);
+
+  readonly totalExpected = computed(() => 
+    this.schedule().reduce((sum, item) => sum + item.expectedAmount, 0)
+  );
+
+  readonly totalActual = computed(() => 
+    this.schedule().reduce((sum, item) => sum + item.actualAmount, 0)
+  );
+
+  readonly dynamicRequiredMonthly = computed(() => {
+    const goal = this.selectedGoal();
+    if (!goal) return 0;
+    
+    const now = new Date();
+    const currentMonthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(now).toUpperCase();
+    const currentYear = now.getFullYear();
+    
+    const schedule = this.schedule();
+    const currentItem = schedule.find(item => 
+      item.month === currentMonthName && item.year === currentYear
+    );
+    
+    if (currentItem) {
+      if (currentItem.status === 'PAID') return 0;
+      return Math.max(0, currentItem.expectedAmount - currentItem.actualAmount);
+    }
+    
+    // Fallback while schedule is loading or if current month is not in schedule
+    return goal.requiredMonthly;
+  });
 
   // Computed data for each goal
   readonly processedGoals = computed(() => {
@@ -61,14 +105,23 @@ export class SavingsGoalsEnhancedComponent {
       // Proyección basada en aporte histórico
       const monthsToComplete = g.monthlyContribution > 0 ? remainingAmount / g.monthlyContribution : Infinity;
       const projectedDate = new Date(today.getTime() + monthsToComplete * 30.44 * 24 * 60 * 60 * 1000);
-      
       const monthsBehind = g.monthlyContribution > 0 ? (projectedDate.getTime() - deadlineDate.getTime()) / (1000 * 60 * 60 * 24 * 30.44) : 0;
+      
+      // Margen de gracia para evitar falsos positivos por redondeo de la constante 30.44
+      // Se dan 2 días de margen antes de marcar como "En riesgo"
+      const GRACE_PERIOD_MS = 86400000 * 2; 
+      const isDateAtRisk = projectedDate.getTime() > (deadlineDate.getTime() + GRACE_PERIOD_MS);
+      const isContributionAtRisk = g.monthlyContribution < (requiredMonthly * 0.8);
 
       // Determinación de status
       let status: GoalStatus = 'on-track';
-      if (g.currentAmount >= g.targetAmount) status = 'completed';
-      else if (diffDays < 0) status = 'overdue';
-      else if (g.monthlyContribution < requiredMonthly * 0.8 || projectedDate > deadlineDate) status = 'at-risk';
+      if (g.currentAmount >= g.targetAmount) {
+        status = 'completed';
+      } else if (diffDays < 0) {
+        status = 'overdue';
+      } else if (isDateAtRisk || isContributionAtRisk) {
+        status = 'at-risk';
+      }
 
       return {
         ...g,
@@ -93,6 +146,13 @@ export class SavingsGoalsEnhancedComponent {
 
   constructor() {
     this.fetchGoals();
+    
+    effect(() => {
+      const goal = this.selectedGoal();
+      if (goal && goal.publicId) {
+        this.fetchSchedule(goal.publicId);
+      }
+    });
   }
 
   fetchGoals(): void {
@@ -113,6 +173,24 @@ export class SavingsGoalsEnhancedComponent {
 
   selectGoal(id: number): void {
     this.selectedGoalId.set(id);
+    const goal = this.goals().find(g => g.id === id);
+    if (goal) {
+      this.fetchSchedule(goal.publicId);
+    }
+  }
+
+  fetchSchedule(publicId: string): void {
+    this.scheduleLoading.set(true);
+    this.configService.getSavingsGoalSchedule(publicId).subscribe({
+      next: data => {
+        this.schedule.set(data);
+        this.scheduleLoading.set(false);
+      },
+      error: () => {
+        this.schedule.set([]);
+        this.scheduleLoading.set(false);
+      }
+    });
   }
 
   navigate(route: string): void {
