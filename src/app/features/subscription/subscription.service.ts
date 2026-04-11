@@ -1,7 +1,8 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../auth/auth.service';
 
 export interface SubscriptionPlan {
   id: number;
@@ -43,6 +44,7 @@ export interface CouponValidation {
 export interface MyPlan {
   planType: 'FREE' | 'PREMIUM' | 'PRO' | null;
   planExpiration: string | null;
+  remainingDays?: number | null;
   features?: string[];
   maxIncomeCategories?: number | null;
   maxExpenseCategories?: number | null;
@@ -60,10 +62,21 @@ export interface AdminUser {
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService {
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private readonly BASE = `${environment.apiUrl}/api/subscriptions`;
   private readonly ADMIN = `${environment.apiUrl}/api/admin/subscriptions`;
-
-  currentPlan = signal<MyPlan | null>(null);
+  
+  currentPlan = computed<MyPlan | null>(() => {
+    const user = this.authService.currentUser();
+    if (!user) return null;
+    return {
+      planType: user.planType as any,
+      planExpiration: user.planExpiration?.toString() || null,
+      remainingDays: user.remainingDays,
+      // For categories, we might still need to fetch details or just assume defaults
+      // But usually, currentPlan is used for display and the guard.
+    };
+  });
 
   // ── User endpoints ───────────────────────────────────────────
 
@@ -71,10 +84,14 @@ export class SubscriptionService {
     return this.http.get<SubscriptionPlan[]>(`${this.BASE}/plans`);
   }
 
-  /** Load plan from backend and update signal */
+  /** Load plan from backend via auth profile */
   loadMyPlan(): Observable<MyPlan> {
-    return this.http.get<MyPlan>(`${this.BASE}/my-plan`).pipe(
-      tap(plan => this.currentPlan.set(plan))
+    return this.authService.fetchProfile().pipe(
+      map(user => ({
+        planType: user.planType as any,
+        planExpiration: user.planExpiration?.toString() || null,
+        remainingDays: user.remainingDays
+      }))
     );
   }
 

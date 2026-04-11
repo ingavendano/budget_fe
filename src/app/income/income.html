@@ -5,12 +5,12 @@
         <p class="al-page-subtitle">Registra y audita tus ingresos.</p>
       </div>
       <div class="al-header-right">
-        <div class="al-user-profile">
+        <div class="al-user-profile" *ngIf="currentUser(); let user">
           <div class="al-user-info">
-            <span class="al-user-name">Adrián Mendoza</span>
-            <span class="al-user-tier">Nivel Premium</span>
+            <span class="al-user-name">{{ user.name }}</span>
+            <span class="al-user-tier">Nivel {{ user.planType }}</span>
           </div>
-          <div class="al-user-avatar">AM</div>
+          <div class="al-user-avatar">{{ user.name.substring(0, 2).toUpperCase() }}</div>
         </div>
       </div>
     </header>

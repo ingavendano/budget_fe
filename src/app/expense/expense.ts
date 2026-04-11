@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ConfigService, Category, ExpenseEntry } from '../config/config.service';
+import { AuthService } from '../auth/auth.service';
 import { NgxMaskDirective } from 'ngx-mask';
 import Swal from 'sweetalert2';
 
@@ -15,6 +16,9 @@ import Swal from 'sweetalert2';
 })
 export class ExpenseComponent implements OnInit {
   private configService = inject(ConfigService);
+  private authService = inject(AuthService);
+
+  public currentUser = this.authService.currentUser;
 
   // Data signals
   categories = signal<Category[]>([]);

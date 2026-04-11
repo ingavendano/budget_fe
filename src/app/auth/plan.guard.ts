@@ -1,16 +1,17 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
+import { AuthService } from './auth.service';
 import { SubscriptionService } from '../features/subscription/subscription.service';
 import { map, catchError, of } from 'rxjs';
 
 export const planGuard: CanActivateFn = (route, state) => {
-  const subscriptionService = inject(SubscriptionService);
+  const authService = inject(AuthService);
   const router = inject(Router);
 
-  // If the plan is already cached in the signal, use it synchronously
-  const current = subscriptionService.currentPlan();
-  if (current) {
-    if (current.planType === null) {
+  // Use the centralized user profile from AuthService
+  const user = authService.currentUser();
+  if (user) {
+    if (authService.isPlanExpired(user)) {
       router.navigate(['/subscription']);
       return false;
     }
@@ -18,9 +19,9 @@ export const planGuard: CanActivateFn = (route, state) => {
   }
 
   // Otherwise, load it from the backend before allowing navigation
-  return subscriptionService.loadMyPlan().pipe(
-    map(plan => {
-      if (plan.planType === null) {
+  return authService.fetchProfile().pipe(
+    map(updatedUser => {
+      if (authService.isPlanExpired(updatedUser)) {
         router.navigate(['/subscription']);
         return false;
       }

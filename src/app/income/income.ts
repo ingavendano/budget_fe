@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ConfigService, Category, IncomeTax, IsrBracket, IncomeEntry } from '../config/config.service';
+import { AuthService } from '../auth/auth.service';
 import Swal from 'sweetalert2';
 import { NgxMaskDirective } from 'ngx-mask';
 
@@ -15,6 +16,9 @@ import { NgxMaskDirective } from 'ngx-mask';
 })
 export class Income implements OnInit {
   private configService = inject(ConfigService);
+  private authService = inject(AuthService);
+
+  public currentUser = this.authService.currentUser;
 
   // State
   availableCategories = signal<Category[]>([]);

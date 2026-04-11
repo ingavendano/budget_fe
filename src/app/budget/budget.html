@@ -5,12 +5,12 @@
       <p class="al-page-subtitle">Configura tus gastos base mensuales para importarlos rápidamente cada mes.</p>
     </div>
     <div class="al-header-right">
-      <div class="al-user-profile">
+      <div class="al-user-profile" *ngIf="currentUser(); let user">
         <div class="al-user-info">
-          <span class="al-user-name">Usuario Corporativo</span>
-          <span class="al-user-tier">Gestión Presupuestaria</span>
+          <span class="al-user-name">{{ user.name }}</span>
+          <span class="al-user-tier">Nivel {{ user.planType }}</span>
         </div>
-        <div class="al-user-avatar">UP</div>
+        <div class="al-user-avatar">{{ user.name.substring(0, 2).toUpperCase() }}</div>
       </div>
     </div>
   </header>
