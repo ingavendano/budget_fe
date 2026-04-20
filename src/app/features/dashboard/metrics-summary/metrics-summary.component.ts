@@ -127,3 +127,5 @@ export class MetricsSummaryComponent {
     return delta > 0 ? 'trending_up' : 'trending_down';
   }
 }
+
+

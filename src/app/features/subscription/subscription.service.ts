@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../core/auth/auth.service';
 
 export interface SubscriptionPlan {
   id: number;
@@ -164,3 +164,6 @@ export class SubscriptionService {
     });
   }
 }
+
+
+

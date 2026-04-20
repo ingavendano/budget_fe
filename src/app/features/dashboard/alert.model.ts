@@ -21,3 +21,5 @@ export interface FinancialAlert {
   metadata?: Record<string, unknown>;
   generatedAt: Date;
 }
+
+

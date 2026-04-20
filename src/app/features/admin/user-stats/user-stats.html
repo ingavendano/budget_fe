@@ -1,0 +1,41 @@
+<div class="admin-stats-container">
+  <div class="al-header-section">
+    <h2 class="al-title">Estadísticas de Usuarios</h2>
+    <p class="al-subtitle">Panel de control administrativo para monitorear el crecimiento y actividad.</p>
+  </div>
+
+  @if (stats()) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Total Usuarios</span>
+        <span class="stat-value">{{ stats()?.totalUsers }}</span>
+      </div>
+      
+      <div class="stat-card" style="border-left: 4px solid var(--al-success);">
+        <span class="stat-label">Usuarios Activos</span>
+        <span class="stat-value">{{ stats()?.activeUsers }}</span>
+      </div>
+
+      <div class="stat-card" style="border-left: 4px solid var(--al-error);">
+        <span class="stat-label">Usuarios Inactivos</span>
+        <span class="stat-value">{{ stats()?.inactiveUsers }}</span>
+      </div>
+    </div>
+
+    <div class="plans-section">
+      <h3 class="al-section-title">Distribución por Plan</h3>
+      <div class="plans-card">
+        @for (plan of planEntries(); track plan.key) {
+          <div class="plan-row">
+            <span class="plan-name">{{ plan.key === 'NONE' ? 'Sin Plan' : plan.key }}</span>
+            <span class="plan-count">{{ plan.value }} usuarios</span>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="al-loading-spinner" style="margin-top: 48px; text-align: center;">
+      <p>Cargando estadísticas...</p>
+    </div>
+  }
+</div>

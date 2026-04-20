@@ -65,7 +65,7 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     // Fetch data when year/month change
     effect(() => {
       this.fetchData(this.year(), this.month());
-    }, { allowSignalWrites: true });
+    });
 
     // Reactively initialize and update chart when canvas and data are ready
     effect(() => {
@@ -214,3 +214,5 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     console.log('[CashflowChart] Chart update signal sent');
   }
 }
+
+

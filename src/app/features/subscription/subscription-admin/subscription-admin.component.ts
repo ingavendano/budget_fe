@@ -201,3 +201,5 @@ export class SubscriptionAdminComponent implements OnInit {
     return c.discountType === 'PERCENTAGE' ? `${c.discountValue}%` : `$${c.discountValue}`;
   }
 }
+
+

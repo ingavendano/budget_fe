@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ConfigService, SavingsGoal } from '../../../config/config.service';
+import { ConfigService, SavingsGoal } from '../../../features/config/config.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -92,3 +92,6 @@ export class SavingsGoalFormComponent implements OnInit {
     });
   }
 }
+
+
+

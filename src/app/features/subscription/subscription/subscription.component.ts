@@ -14,7 +14,7 @@ import {
   CouponValidation,
   MyPlan,
 } from '../subscription.service';
-import { AuthService } from '../../../auth/auth.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-subscription',
@@ -24,23 +24,23 @@ import { AuthService } from '../../../auth/auth.service';
   styleUrl: './subscription.component.scss',
 })
 export class SubscriptionComponent implements OnInit {
-  private svc    = inject(SubscriptionService);
-  private auth   = inject(AuthService);
+  private svc = inject(SubscriptionService);
+  private auth = inject(AuthService);
 
-  plans       = signal<SubscriptionPlan[]>([]);
-  myPlan      = signal<MyPlan | null>(null);
-  loading     = signal(true);
-  submitting  = signal(false);
-  successMsg  = signal<string | null>(null);
-  errorMsg    = signal<string | null>(null);
+  plans = signal<SubscriptionPlan[]>([]);
+  myPlan = signal<MyPlan | null>(null);
+  loading = signal(true);
+  submitting = signal(false);
+  successMsg = signal<string | null>(null);
+  errorMsg = signal<string | null>(null);
 
-  selectedPlan   = signal<SubscriptionPlan | null>(null);
-  couponCode     = signal('');
-  couponResult   = signal<CouponValidation | null>(null);
+  selectedPlan = signal<SubscriptionPlan | null>(null);
+  couponCode = signal('');
+  couponResult = signal<CouponValidation | null>(null);
   validatingCoupon = signal(false);
 
   finalPrice = computed(() => {
-    const plan   = this.selectedPlan();
+    const plan = this.selectedPlan();
     const coupon = this.couponResult();
     if (!plan) return null;
     if (coupon?.valid && coupon.finalPrice !== undefined) return coupon.finalPrice;
@@ -133,3 +133,5 @@ export class SubscriptionComponent implements OnInit {
     return this.auth.getUserRole() === 'ADMIN';
   }
 }
+
+

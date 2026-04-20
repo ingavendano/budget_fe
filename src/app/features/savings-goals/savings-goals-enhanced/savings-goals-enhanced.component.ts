@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Router, RouterModule } from '@angular/router';
-import { ConfigService } from '../../../config/config.service';
+import { ConfigService } from '../../../features/config/config.service';
 
 interface SavingsGoal {
   id: number;
@@ -22,7 +22,10 @@ interface SavingsGoal {
   deadline: string;
   icon: string;
   monthlyContribution: number;
-  contributionDay: number;
+  averageMonthlyContribution: number;
+  expectedMonthlyAmount: number;
+  monthsRemaining: number;
+  isPaidCurrentMonth: boolean;
 }
 
 interface ScheduleItem {
@@ -69,22 +72,11 @@ export class SavingsGoalsEnhancedComponent {
     const goal = this.selectedGoal();
     if (!goal) return 0;
     
-    const now = new Date();
-    const currentMonthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(now).toUpperCase();
-    const currentYear = now.getFullYear();
+    // If backend confirms it's paid for this month, return 0
+    if (goal.isPaidCurrentMonth) return 0;
     
-    const schedule = this.schedule();
-    const currentItem = schedule.find(item => 
-      item.month === currentMonthName && item.year === currentYear
-    );
-    
-    if (currentItem) {
-      if (currentItem.status === 'PAID') return 0;
-      return Math.max(0, currentItem.expectedAmount - currentItem.actualAmount);
-    }
-    
-    // Fallback while schedule is loading or if current month is not in schedule
-    return goal.requiredMonthly;
+    // Use the expected amount from backend
+    return goal.expectedMonthlyAmount || 0;
   });
 
   // Computed data for each goal
@@ -197,3 +189,6 @@ export class SavingsGoalsEnhancedComponent {
     this.router.navigateByUrl(route);
   }
 }
+
+
+

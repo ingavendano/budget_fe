@@ -1,0 +1,377 @@
+<div class="al-config-page">
+  <!-- Page Header -->
+  <div class="al-page-header">
+    <h1 class="al-page-title">Configuración de Ingresos</h1>
+    <p class="al-page-subtitle">Define tus flujos de ingresos, obligaciones fiscales y lógica de categorización dentro de tu libro privado.</p>
+  </div>
+
+  <!-- Main 2-Column Layout -->
+  <div class="al-main-layout">
+
+    <!-- LEFT COLUMN: Forms + Tables -->
+    <div class="al-left-column">
+
+      <!-- Section 1: Category Creation & Management -->
+      <div class="al-section-card">
+        <div class="al-section-header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 class="al-section-title" style="margin: 0;">Creación y Gestión de Categorías</h2>
+          <div class="al-badge-locked" *ngIf="categoryType() === 'INCOME'" style="background: var(--al-primary-container); color: var(--al-on-primary-container);">
+            Ingresos Creados: {{currentIncomeCount()}} / {{maxIncomeCategories() === null ? '∞' : maxIncomeCategories()}}
+          </div>
+          <div class="al-badge-locked" *ngIf="categoryType() === 'EXPENSE'" style="background: var(--al-error-container); color: var(--al-on-error-container);">
+            Egresos Creados: {{currentExpenseCount()}} / {{maxExpenseCategories() === null ? '∞' : maxExpenseCategories()}}
+          </div>
+        </div>
+
+        <div class="al-form-grid">
+          <!-- Left: Inputs -->
+          <div class="al-form-inputs">
+            <div class="al-field-group">
+              <label class="al-label">Nombre de la Categoría</label>
+              <input type="text" class="al-input" placeholder="Ej: Honorarios por Consultoría"
+                [ngModel]="categoryName()" (ngModelChange)="categoryName.set($event)">
+            </div>
+
+            <div class="al-field-row">
+              <div class="al-field-group">
+                <label class="al-label">Tipo</label>
+                <select class="al-input al-select" [ngModel]="categoryType()" (ngModelChange)="categoryType.set($event)">
+                  <option value="INCOME">Ingreso</option>
+                  <option value="EXPENSE">Egreso</option>
+                </select>
+              </div>
+              <div class="al-field-group">
+                <label class="al-label">Tema de Color</label>
+                <div class="al-color-row">
+                  <button *ngFor="let color of colors" class="al-color-dot"
+                    [style.background]="color"
+                    [class.active]="selectedColor() === color"
+                    (click)="selectColor(color)">
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="al-field-group">
+              <label class="al-label">Selector de Icono</label>
+              <div class="al-icon-row">
+                <button *ngFor="let icon of icons" class="al-icon-btn"
+                  [class.active]="selectedIcon() === icon"
+                  (click)="selectIcon(icon)">
+                  <span class="material-symbols-outlined">{{icon}}</span>
+                </button>
+              </div>
+            </div>
+
+            <button class="al-btn-primary" (click)="saveCategory()">
+              {{ editingCategoryId() ? 'Actualizar Categoría' : 'Guardar Categoría' }}
+            </button>
+          </div>
+
+          <!-- Right: Category List -->
+          <div class="al-category-table">
+            <div class="al-table-header">
+              <span class="al-th" style="flex:1">Categoría</span>
+              <span class="al-th" style="width:90px">Tipo</span>
+              <span class="al-th" style="width:80px">Acciones</span>
+            </div>
+            <div class="al-table-body">
+              <div class="al-table-row" *ngFor="let cat of availableCategories()"
+                [class.is-selected]="selectedIncomeCategoryId() === cat.id"
+                (click)="cat.type === 'INCOME' && selectedIncomeCategoryId.set(cat.id!)">
+                <div class="al-td cat-info" style="flex:1">
+                  <span class="al-cat-icon material-symbols-outlined" [style.color]="cat.color">{{cat.icon}}</span>
+                  <span class="al-cat-name">{{cat.name}}</span>
+                </div>
+                <div class="al-td" style="width:90px">
+                  <span class="al-chip" [class.income]="cat.type === 'INCOME'" [class.expense]="cat.type === 'EXPENSE'">
+                    {{cat.type === 'INCOME' ? 'INGRESO' : 'EGRESO'}}
+                  </span>
+                </div>
+                <div class="al-td al-actions" style="width:80px">
+                  <button class="al-icon-action" title="Editar"
+                    (click)="editCategory(cat); $event.stopPropagation()">
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <button class="al-icon-action danger" title="Eliminar"
+                    (click)="$event.stopPropagation(); deleteCategory(cat.id!)">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
+              </div>
+              <div *ngIf="availableCategories().length === 0" class="al-empty-state">
+                <span class="material-symbols-outlined">category</span>
+                <span>Aún no hay categorías</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Tax Configuration -->
+      <div class="al-section-card">
+        <div class="al-section-header-row">
+          <h2 class="al-section-title">Configuración de Impuestos (Solo Ingresos)</h2>
+          <span class="al-badge-locked">BLOQUEADO A INGRESOS</span>
+        </div>
+
+        <div class="al-tax-form-grid">
+          <div class="al-field-group">
+            <label class="al-label">Nombre del Impuesto</label>
+            <input type="text" class="al-input" placeholder="Ej: Impuesto sobre la Renta Federal"
+              [ngModel]="taxName()" (ngModelChange)="taxName.set($event)">
+          </div>
+          <div class="al-field-group">
+            <label class="al-label">Porcentaje (%)</label>
+            <input type="text" class="al-input" placeholder="15.00"
+              mask="percent" suffix="%" [dropSpecialCharacters]="true"
+              [ngModel]="taxPercentage()" (ngModelChange)="taxPercentage.set($event)" [disabled]="isIsrTax()">
+          </div>
+          <div class="al-field-group">
+            <label class="al-label">Tipo de Contrato</label>
+            <select class="al-input al-select" [ngModel]="salaryType()" (ngModelChange)="setSalaryType($event)">
+              <option value="CONTRATO">Sueldo / Salario</option>
+              <option value="SERVICIOS_PROFESIONALES">Servicios Profesionales</option>
+              <option value="OTROS">Otros</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="al-toggle-row">
+          <div class="al-toggle-group">
+            <div class="al-toggle-item">
+              <div class="al-toggle" [class.on]="limitApplicable()" (click)="limitApplicable.set(!limitApplicable())">
+                <div class="al-toggle-thumb"></div>
+              </div>
+              <span class="al-toggle-label">¿Límite Aplicable? (SÍ/NO)</span>
+            </div>
+            <div class="al-toggle-item">
+              <div class="al-toggle" [class.on]="rangeTableRequired()" (click)="rangeTableRequired.set(!rangeTableRequired())">
+                <div class="al-toggle-thumb"></div>
+              </div>
+              <span class="al-toggle-label">¿Requiere Tabla de Rangos? (SÍ/NO)</span>
+            </div>
+          </div>
+
+          <!-- Conditional Limit Value Field -->
+          <div class="al-limit-field" *ngIf="limitApplicable()">
+            <label class="al-label">Valor tope (límite máximo)</label>
+            <input type="text" class="al-input" placeholder="Ej: 1000.00"
+              mask="separator.2" thousandSeparator="," [dropSpecialCharacters]="true"
+              [ngModel]="limitValue()" (ngModelChange)="limitValue.set($event)">
+          </div>
+        </div>
+
+        <!-- Tax Library Table -->
+        <div class="al-tax-table-wrapper">
+          <div class="al-table-header">
+            <span class="al-th" style="flex:1.5">Entidad Fiscal</span>
+            <span class="al-th" style="flex:1">Contrato</span>
+            <span class="al-th" style="flex:1">Tasa Base</span>
+            <span class="al-th" style="width:100px">Gestión</span>
+          </div>
+          <div class="al-table-row" *ngFor="let tax of allTaxes()">
+            <div class="al-td" style="flex:1.5">
+              <span class="al-tax-name">{{tax.name}}</span>
+            </div>
+            <div class="al-td" style="flex:1">
+              <span class="al-tax-contract">
+                {{tax.salaryType === 'CONTRATO' ? 'Sueldo' : tax.salaryType === 'SERVICIOS_PROFESIONALES' ? 'Serv. Profesionales' : 'Otro'}}
+              </span>
+            </div>
+            <div class="al-td" style="flex:1">
+              <span class="al-rate" *ngIf="!isIsrTaxItem(tax)">{{tax.percentage}}%</span>
+              <span class="al-rate variable" *ngIf="isIsrTaxItem(tax)">Variable</span>
+            </div>
+            <div class="al-td al-actions" style="width:100px">
+              <button class="al-icon-action" (click)="editTax(tax)">
+                <span class="material-symbols-outlined">settings</span>
+              </button>
+              <button class="al-icon-action danger" (click)="$event.stopPropagation(); deleteTax(tax.id!)">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="allTaxes().length === 0" class="al-empty-state">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <span>Aún no se han creado reglas fiscales</span>
+          </div>
+        </div>
+
+        <div class="al-tax-form-actions">
+          <button class="al-btn-primary" (click)="saveTaxConfiguration()">
+            {{ editingTaxId() ? 'Actualizar Impuesto' : 'Guardar Impuesto' }}
+          </button>
+          <button class="al-btn-ghost" *ngIf="editingTaxId()" (click)="resetTaxForm()">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- Section 3: ISR Parameterization Table — always visible -->
+      <div class="al-section-card">
+        <div class="al-section-header-row">
+          <div class="al-section-title-group">
+            <span class="material-symbols-outlined al-section-icon">table_chart</span>
+            <h2 class="al-section-title">Parametrización (Rangos de Impuesto sobre la Renta)</h2>
+          </div>
+          <button class="al-btn-ghost-sm" (click)="addBracket()">
+            <span class="material-symbols-outlined">add</span> Agregar Rango
+          </button>
+        </div>
+
+        <div class="al-isr-table">
+          <div class="al-isr-header">
+            <span class="al-isr-th">Nombre del Rango</span>
+            <span class="al-isr-th right">Base Inicial</span>
+            <span class="al-isr-th right">Base Final</span>
+            <span class="al-isr-th right">Porcentaje</span>
+            <span class="al-isr-th right">Exceso</span>
+            <span class="al-isr-th right">Cuota Fija</span>
+          </div>
+          <div class="al-isr-row" *ngFor="let bracket of isrBrackets(); let i = index">
+            <div class="al-isr-td">
+              <input class="al-isr-input" type="text" [(ngModel)]="bracket.rangeName" placeholder="Tramo 1">
+            </div>
+            <div class="al-isr-td right">
+              <input class="al-isr-input" type="text" [(ngModel)]="bracket.lowerLimit" 
+                mask="separator.2" thousandSeparator="," [dropSpecialCharacters]="true" placeholder="0.00">
+            </div>
+            <div class="al-isr-td right">
+              <input class="al-isr-input" type="text" [(ngModel)]="bracket.upperLimit" 
+                mask="separator.2" thousandSeparator="," [dropSpecialCharacters]="true" placeholder="0.00">
+            </div>
+            <div class="al-isr-td right">
+              <input class="al-isr-input" type="text" [(ngModel)]="bracket.applyPercentage" 
+                mask="percent" suffix="%" [dropSpecialCharacters]="true" placeholder="0">
+            </div>
+            <div class="al-isr-td right">
+              <input class="al-isr-input" type="text" [(ngModel)]="bracket.excess" 
+                mask="separator.2" thousandSeparator="," [dropSpecialCharacters]="true" placeholder="0.00">
+            </div>
+            <div class="al-isr-td right">
+              <input class="al-isr-input" type="text" [(ngModel)]="bracket.fixedFee" 
+                mask="separator.2" thousandSeparator="," [dropSpecialCharacters]="true" placeholder="0.00">
+            </div>
+          </div>
+
+          <div *ngIf="isrBrackets().length === 0" class="al-empty-state">
+            <span>No hay rangos definidos. Haz clic en "+ Agregar Rango" para comenzar.</span>
+          </div>
+        </div>
+
+        <div class="al-section-footer" *ngIf="isAdmin()" style="display: flex; justify-content: flex-end; margin-top: 24px; border-top: 1px solid var(--al-surface-container); padding-top: 24px;">
+          <button class="al-btn-primary" (click)="saveParameterization()">
+            Guardar Configuración de Tabla
+          </button>
+        </div>
+      </div>
+
+      <!-- Section 4: Association Ledger (Overview) -->
+      <div class="al-section-card" style="margin-top: 28px;">
+        <div class="al-section-header-row">
+          <div class="al-section-title-group">
+            <span class="al-section-icon material-symbols-outlined">account_tree</span>
+            <h2 class="al-section-title">Libro de Asociaciones</h2>
+          </div>
+          <span class="al-badge-locked">VISIÓN GENERAL</span>
+        </div>
+
+        <div class="al-ledger-table">
+          <div class="al-table-header">
+            <span class="al-th" style="width:220px">Categoría</span>
+            <span class="al-th" style="flex:1">Impuestos Asociados</span>
+            <span class="al-th" style="width:100px; text-align:right">Tipo</span>
+          </div>
+          
+          <div class="al-table-body" style="max-height: 400px; overflow-y: auto;">
+            <div class="al-table-row" *ngFor="let cat of incomeCategories()" style="cursor: default; border-bottom: 1px solid var(--al-surface-container-low); border-radius: 0;">
+              <div class="al-td" style="width:220px">
+                <span class="al-cat-icon material-symbols-outlined" [style.color]="cat.color">{{cat.icon}}</span>
+                <span class="al-cat-name" style="margin-left:10px">{{cat.name}}</span>
+              </div>
+              <div class="al-td" style="flex:1; flex-wrap: wrap; gap: 6px; padding: 10px 0;">
+                <span *ngFor="let tax of cat.taxes" class="al-tax-chip">
+                  {{tax.name}}
+                </span>
+                <span *ngIf="!cat.taxes || cat.taxes.length === 0" class="al-empty-text-sm" style="opacity: 0.5; font-size: 12px; font-style: italic;">
+                  Sin impuestos asociados
+                </span>
+              </div>
+              <div class="al-td" style="width:100px; justify-content: flex-end;">
+                <span class="al-chip" [class.income]="cat.type === 'INCOME'" [class.expense]="cat.type === 'EXPENSE'">
+                  {{cat.type === 'INCOME' ? 'INGRESO' : 'EGRESO'}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /left column -->
+
+    <!-- RIGHT COLUMN: Tax Association Sidebar -->
+    <div class="al-right-sidebar">
+      <div class="al-sidebar-card">
+        <div class="al-section-header-row" style="margin-bottom: 20px;">
+          <h2 class="al-sidebar-title" style="margin: 0;">Asociación de Impuestos</h2>
+          <button *ngIf="selectedIncomeCategoryId()" class="al-btn-secondary" style="padding: 4px 12px; font-size: 13px;"
+            (click)="selectedIncomeCategoryId.set('')">
+            Limpiar
+          </button>
+        </div>
+
+        <div class="al-field-group">
+          <select class="al-input al-select"
+            [ngModel]="selectedIncomeCategoryId()"
+            (ngModelChange)="selectedIncomeCategoryId.set($event)">
+            <option value="">Selecciona Categoría</option>
+            <option *ngFor="let cat of incomeCategories()" [ngValue]="cat.id">{{cat.name}}</option>
+          </select>
+        </div>
+
+        <div class="al-association-link-icon" *ngIf="selectedCategory()">
+          <span class="material-symbols-outlined">link</span>
+        </div>
+
+        <div class="al-field-group" *ngIf="selectedCategory()">
+          <div class="al-assoc-list">
+            <div class="al-assoc-item" *ngFor="let tax of allTaxes()" (click)="toggleTaxAssociation(tax)">
+              <div class="al-checkbox" [class.checked]="isTaxAssociated(tax.id)">
+                <span class="material-symbols-outlined" *ngIf="isTaxAssociated(tax.id)">check</span>
+              </div>
+              <div class="al-assoc-label">
+                <span class="al-assoc-name">{{tax.name}}</span>
+                <span class="al-assoc-type">
+                  {{tax.salaryType === 'CONTRATO' ? 'Sueldo' : tax.salaryType === 'SERVICIOS_PROFESIONALES' ? 'Serv. Profesionales' : 'Otro'}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="al-field-group" *ngIf="!selectedCategory()">
+          <div class="al-empty-assoc">
+            <span class="material-symbols-outlined">touch_app</span>
+            <p>Selecciona una categoría arriba para gestionar sus asociaciones fiscales.</p>
+          </div>
+        </div>
+
+        <button class="al-btn-associate" *ngIf="selectedCategory()">
+          <span>Asociar Entidades</span>
+        </button>
+
+        <!-- Info Card -->
+        <div class="al-info-card">
+          <div class="al-info-card-icon">
+            <span class="material-symbols-outlined">verified_user</span>
+          </div>
+          <div>
+            <h4 class="al-info-card-title">Fiscalidad Jerárquica</h4>
+            <p class="al-info-card-body">Los impuestos asociados a las categorías se aplicarán automáticamente a cualquier transacción de ingreso mapeada a esa categoría.</p>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /right sidebar -->
+
+  </div><!-- /main layout -->
+</div>

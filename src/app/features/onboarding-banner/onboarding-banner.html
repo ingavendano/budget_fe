@@ -1,0 +1,64 @@
+<!-- onboarding-banner.component.html -->
+<div class="onboarding-banner" *ngIf="visible">
+
+    <!-- Encabezado -->
+    <div class="banner-header">
+        <div class="banner-title">
+            <div class="banner-icon">
+                <span class="material-symbols-outlined">rocket_launch</span>
+            </div>
+            <div>
+                <p class="title-text">Configura tu Nemía</p>
+                <p class="title-sub">Completa los pasos para empezar a ver resultados</p>
+            </div>
+        </div>
+        <button class="dismiss-btn" (click)="dismiss()">Recordar después</button>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="progress-row">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" [style.width.%]="onboarding.progress">
+            </div>
+        </div>
+        <span class="progress-counter">
+            {{ onboarding.currentStep }} de {{ onboarding.steps.length }} completados
+        </span>
+    </div>
+
+    <!-- Pasos -->
+    <div class="steps-row">
+        <div *ngFor="let step of onboarding.steps; let i = index" class="step-chip"
+            [class.done]="getStepState(i) === 'done'" [class.active]="getStepState(i) === 'active'"
+            [class.pending]="getStepState(i) === 'pending'">
+
+            <!-- Ícono completado -->
+            <span *ngIf="getStepState(i) === 'done'" class="step-check material-symbols-outlined">
+                check_circle
+            </span>
+
+            <!-- Punto activo o pendiente -->
+            <span *ngIf="getStepState(i) !== 'done'" class="step-dot"></span>
+
+            {{ step.label }}
+        </div>
+    </div>
+
+    <!-- Acción siguiente -->
+    <div class="action-row" *ngIf="!onboarding.isCompleted">
+        <p class="action-text">
+            Siguiente: <strong>{{ onboarding.nextStep?.description }}</strong>
+        </p>
+        <button class="action-btn" (click)="goToNextStep()">
+            {{ onboarding.nextStep?.ctaText }}
+        </button>
+    </div>
+
+    <!-- Completado -->
+    <div class="action-row completed" *ngIf="onboarding.isCompleted">
+        <p class="action-text">
+            <strong>¡Todo listo! Ya puedes ver tu dashboard completo.</strong>
+        </p>
+    </div>
+
+</div>

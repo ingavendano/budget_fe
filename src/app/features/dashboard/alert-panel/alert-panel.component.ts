@@ -94,3 +94,5 @@ export class AlertPanelComponent implements OnInit {
     return alert.id;
   }
 }
+
+

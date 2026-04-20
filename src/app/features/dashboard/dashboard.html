@@ -1,0 +1,140 @@
+<main class="al-main-content">
+  <!-- Banner de onboarding — se oculta automáticamente al completar -->
+  <app-onboarding-banner></app-onboarding-banner>
+  <header class="al-page-header">
+    <div class="al-header-left">
+      <h2 class="al-page-title">Visión general financiera</h2>
+      <p class="al-page-subtitle">Gestiona y audita tus gastos, créditos y personales.</p>
+    </div>
+    <div class="al-header-right">
+      <div class="al-period-selectors">
+        <select class="al-select-mini">
+          <option>{{ currentMonth }}</option>
+        </select>
+        <select class="al-select-mini">
+          <option>{{ currentYear }}</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="al-content-scroll">
+    <!-- Fila 1: Métricas con deltas -->
+    <app-metrics-summary [year]="selectedYear()" [month]="selectedMonth()" />
+
+    <!-- Wealth Management Widgets -->
+    <div class="wealth-management-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+      
+      <!-- Emergency Fund Runway -->
+      <div class="al-section-card" *ngIf="emergencyFund()" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <h3 class="al-section-title" style="margin-bottom: 0;">Fondo de Emergencia</h3>
+          <span class="material-symbols-outlined" style="color: var(--color-primary)">shield</span>
+        </div>
+        
+        <div style="display: flex; gap: 24px; margin-top: 12px; align-items: center;">
+          <div>
+            <div style="font-size: 13px; color: var(--color-text-mut);">Ahorro Actual</div>
+            <div style="font-size: 28px; font-weight: 500; font-family: var(--font-mono); color: var(--color-emerald);">
+              {{ emergencyFund()?.currentAmount | currency }}
+            </div>
+          </div>
+          <div style="width: 1px; height: 40px; background: var(--color-border);"></div>
+          <div>
+            <div style="font-size: 13px; color: var(--color-text-mut);">Meses de Pista (Runway)</div>
+            <div style="font-size: 24px; font-weight: 500; display: flex; align-items: center; gap: 8px;"
+                 [style.color]="(emergencyFund()?.runwayMonths ?? 0) > 3 ? 'var(--color-emerald)' : 'var(--color-warning)'">
+              {{ emergencyFund()?.runwayMonths }} meses
+              <span class="material-symbols-outlined" style="font-size: 18px;">
+                {{ (emergencyFund()?.runwayMonths ?? 0) > 3 ? 'verified_user' : 'warning' }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: var(--color-text-mut); margin: 0; line-height: 1.5;">
+          Basado en tu gasto promedio reciente de <strong>{{ emergencyFund()?.avgMonthlyExpenses | currency }}/mes</strong>.
+          <span *ngIf="(emergencyFund()?.runwayMonths ?? 0) < 3">Idealmente deberías tener al menos 3 a 6 meses cubiertos.</span>
+        </p>
+      </div>
+
+      <!-- Net Worth Snapshot -->
+      <div class="al-section-card" *ngIf="netWorthHistory().length > 0" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <h3 class="al-section-title" style="margin-bottom: 0;">Patrimonio Neto (Net Worth)</h3>
+          <span class="material-symbols-outlined" style="color: var(--color-primary)">account_balance</span>
+        </div>
+        
+        <div style="display: flex; gap: 24px; margin-top: 12px; align-items: center;">
+          <div>
+            <div style="font-size: 13px; color: var(--color-text-mut);">Activos (Assets)</div>
+            <div style="font-size: 20px; font-weight: 500; font-family: var(--font-mono); color: var(--color-emerald);">
+              {{ netWorthHistory()[0]?.assets | currency }}
+            </div>
+          </div>
+          <div>
+            <div style="font-size: 13px; color: var(--color-text-mut);">Pasivos (Liabilities)</div>
+            <div style="font-size: 20px; font-weight: 500; font-family: var(--font-mono); color: var(--color-error);">
+              {{ netWorthHistory()[0]?.liabilities | currency }}
+            </div>
+          </div>
+          <div style="width: 1px; height: 40px; background: var(--color-border);"></div>
+          <div>
+            <div style="font-size: 13px; color: var(--color-text-mut);">Tú Patrimonio Hoy</div>
+            <div style="font-size: 24px; font-weight: 500; color: var(--color-primary);">
+              {{ netWorthHistory()[0]?.netWorth | currency }}
+            </div>
+          </div>
+        </div>
+        <!-- Mini sparkline mock -->
+        <div style="display: flex; gap: 4px; height: 24px; align-items: flex-end; margin-top: 4px;">
+          <div *ngFor="let m of netWorthHistory().slice().reverse()" 
+               [title]="'Mes ' + m.month + ': ' + (m.netWorth | currency)"
+               [style.height.%]="m.netWorth > 0 ? (m.netWorth / (netWorthHistory().slice().reverse()[0]?.netWorth || 1) * 100) : 5"
+               style="flex: 1; background: var(--color-primary); opacity: 0.8; border-radius: 2px 2px 0 0;">
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Charts & Breakdown -->
+    <div class="dashboard-grid">
+      <!-- Real-Time Cashflow Chart -->
+      <app-cashflow-chart [year]="selectedYear()" [month]="selectedMonth()" />
+
+      <!-- Alert Panel -->
+      <app-alert-panel [year]="selectedYear()" [month]="selectedMonth()" />
+    </div>
+
+    <!-- Bottom Section: Categories & Financial Health -->
+    <div class="dashboard-bottom-grid">
+
+      <!-- Category Breakdown -->
+      <div class="al-section-card breakdown-container" style="margin-bottom: 0;">
+        <h3 class="al-section-title" style="margin-bottom: 24px;">Principales categorías de gasto</h3>
+
+        <div class="category-list"
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;">
+          <div class="category-item" *ngFor="let cat of stats()?.expensesByCategory">
+            <div class="cat-row">
+              <div class="cat-info">
+                <div class="cat-icon-frame" [style.background-color]="cat.color + '20'">
+                  <span class="material-symbols-outlined" [style.color]="cat.color">{{ cat.icon }}</span>
+                </div>
+                <span class="cat-name">{{ cat.name }}</span>
+              </div>
+              <span class="cat-amount">-{{ cat.total | number:'1.2-2' }}</span>
+            </div>
+            <div class="cat-progress-bg">
+              <div class="cat-progress-bar" [style.width.%]="cat.percentage" [style.background-color]="cat.color"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Health -->
+      <app-financial-health [year]="selectedYear()" [month]="selectedMonth()" />
+
+    </div>
+  </div>
+</main>

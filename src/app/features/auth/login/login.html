@@ -1,0 +1,48 @@
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">
+          <span class="material-symbols-outlined">account_balance_wallet</span>
+          <span>Nemía</span>
+        </div>
+        <h1>Bienvenido de nuevo</h1>
+        <p>Ingresa a tu portal financiero privado</p>
+      </div>
+
+      <form class="auth-form" (submit)="handleLogin(); $event.preventDefault()">
+        <div class="field-group">
+          <label>Correo Electrónico</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined">mail</span>
+            <input type="email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email"
+              placeholder="ejemplo@correo.com" required>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Contraseña</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined">lock</span>
+            <input type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password"
+              placeholder="••••••••" required>
+          </div>
+        </div>
+
+        <div *ngIf="error()" class="auth-error">
+          <span class="material-symbols-outlined">error</span>
+          <span>{{error()}}</span>
+        </div>
+
+        <button type="submit" class="auth-submit-btn" [disabled]="isLoading()">
+          <span *ngIf="!isLoading()">Iniciar Sesión</span>
+          <span *ngIf="isLoading()" class="loader"></span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>¿No tienes cuenta? <a routerLink="/register">Regístrate</a></p>
+      </div>
+    </div>
+  </div>
+</div>
