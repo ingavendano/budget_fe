@@ -186,15 +186,18 @@ export interface AdminDashboardStatsDTO {
 })
 export class ConfigService {
   private http = inject(HttpClient);
-  private readonly BASE = environment.apiUrl;
-  private configUrl          = `${this.BASE}/api/config`;
-  private incomeUrl          = `${this.BASE}/api/incomes`;
-  private expenseUrl         = `${this.BASE}/api/expenses`;
-  private savingsGoalUrl     = `${this.BASE}/api/savings-goals`;
-  private budgetTemplateUrl  = `${this.BASE}/api/budget-templates`;
-  private debtUrl            = `${this.BASE}/api/debts`;
-  private userUrl            = `${this.BASE}/api/user`;
-  private statsUrl           = `${this.BASE}/api/stats`;
+  // Ensure the base URL doesn't have a trailing slash or '/api' to avoid duplication
+  private readonly BASE = environment.apiUrl.replace(/\/api\/?$/, '').replace(/\/+$/, '');
+  private readonly API_ROOT = `${this.BASE}/api`;
+
+  private configUrl          = `${this.API_ROOT}/config`;
+  private incomeUrl          = `${this.API_ROOT}/incomes`;
+  private expenseUrl         = `${this.API_ROOT}/expenses`;
+  private savingsGoalUrl     = `${this.API_ROOT}/savings-goals`;
+  private budgetTemplateUrl  = `${this.API_ROOT}/budget-templates`;
+  private debtUrl            = `${this.API_ROOT}/debts`;
+  private userUrl            = `${this.API_ROOT}/user`;
+  private statsUrl           = `${this.API_ROOT}/stats`;
 
   constructor() {
     // Check for saved theme in localStorage as a fallback/initial boost
@@ -311,9 +314,9 @@ export class ConfigService {
 
   saveSavingsGoal(goal: SavingsGoal): Observable<SavingsGoal> {
     if (goal.publicId) {
-      return this.http.put<SavingsGoal>(`${environment.apiUrl}/api/savings-goals/${goal.publicId}`, goal);
+      return this.http.put<SavingsGoal>(`${this.savingsGoalUrl}/${goal.publicId}`, goal);
     }
-    return this.http.post<SavingsGoal>(`${environment.apiUrl}/api/savings-goals`, goal);
+    return this.http.post<SavingsGoal>(this.savingsGoalUrl, goal);
   }
 
   getSavingsGoal(publicId: string): Observable<SavingsGoal> {
@@ -321,7 +324,7 @@ export class ConfigService {
   }
 
   getSavingsGoalSchedule(publicId: string): Observable<SavingsGoalScheduleItem[]> {
-    return this.http.get<SavingsGoalScheduleItem[]>(`${environment.apiUrl}/api/savings-goals/${publicId}/schedule`);
+    return this.http.get<SavingsGoalScheduleItem[]>(`${this.savingsGoalUrl}/${publicId}/schedule`);
   }
 
   depositToGoal(publicId: string, amount: number): Observable<SavingsGoal> {
@@ -398,11 +401,11 @@ export class ConfigService {
 
   // ── WEALTH MANAGEMENT ──────────────────────────────────────────
   getEmergencyFund(): Observable<EmergencyFundDTO> {
-    return this.http.get<EmergencyFundDTO>(`${this.BASE}/api/dashboard/emergency-fund`);
+    return this.http.get<EmergencyFundDTO>(`${this.API_ROOT}/dashboard/emergency-fund`);
   }
 
   getHistoricalNetWorth(): Observable<PeriodMetricsDTO[]> {
-    return this.http.get<PeriodMetricsDTO[]>(`${this.BASE}/api/dashboard/net-worth/historical`);
+    return this.http.get<PeriodMetricsDTO[]>(`${this.API_ROOT}/dashboard/net-worth/historical`);
   }
 
   getAdminStats(): Observable<AdminDashboardStatsDTO> {
