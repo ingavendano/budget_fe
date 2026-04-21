@@ -33,7 +33,7 @@ export class AlertService {
   private http = inject(HttpClient);
   private subscriptionService = inject(SubscriptionService);
 
-  private readonly API = `${environment.apiUrl}/api`;
+  private readonly API = environment.apiUrl;
   private readonly OVERSPEND_THRESHOLD = 0.20;
   private readonly SAVINGS_RATE_TARGET  = 0.20;
   private readonly DEBT_WARNING_DAYS    = 7;

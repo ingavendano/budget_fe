@@ -187,8 +187,7 @@ export interface AdminDashboardStatsDTO {
 export class ConfigService {
   private http = inject(HttpClient);
   // Ensure the base URL doesn't have a trailing slash or '/api' to avoid duplication
-  private readonly BASE = environment.apiUrl.replace(/\/api\/?$/, '').replace(/\/+$/, '');
-  private readonly API_ROOT = `${this.BASE}/api`;
+  private readonly API_ROOT = environment.apiUrl;
 
   private configUrl          = `${this.API_ROOT}/config`;
   private incomeUrl          = `${this.API_ROOT}/incomes`;
