@@ -90,7 +90,7 @@ export class MetricsSummaryComponent {
     this.error.set(null);
 
     this.http
-      .get<DashboardMetrics>(`${environment.apiUrl}/api/dashboard/metrics?year=${year}&month=${month}`)
+      .get<DashboardMetrics>(`${environment.apiUrl}/dashboard/metrics?year=${year}&month=${month}`)
       .subscribe({
         next: data => {
           this.metrics.set(data);

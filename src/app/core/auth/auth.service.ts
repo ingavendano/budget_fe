@@ -12,7 +12,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
-  private readonly userUrl = `${environment.apiUrl}/api/user`;
+  private readonly userUrl = `${environment.apiUrl}/user`;
 
   private userToken = signal<string | null>(localStorage.getItem('token'));
   public currentUser = signal<UserDTO | null>(null);

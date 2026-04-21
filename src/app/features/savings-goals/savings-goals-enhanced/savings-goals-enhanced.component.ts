@@ -151,7 +151,7 @@ export class SavingsGoalsEnhancedComponent {
     this.loading.set(true);
     this.error.set(null);
 
-    this.http.get<SavingsGoal[]>(`${environment.apiUrl}/api/savings-goals`).subscribe({
+    this.http.get<SavingsGoal[]>(`${environment.apiUrl}/savings-goals`).subscribe({
       next: data => {
         this.goals.set(data);
         this.loading.set(false);

@@ -12,7 +12,7 @@ export interface PasswordResetRequest {
 })
 export class AdminUserService {
   private http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/api/admin/users`;
+  private readonly apiUrl = `${environment.apiUrl}/admin/users`;
 
   resetAllPasswords(newPassword: string): Observable<string> {
     const request: PasswordResetRequest = { newPassword };

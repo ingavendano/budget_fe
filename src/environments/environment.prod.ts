@@ -4,5 +4,5 @@
 // Para desarrollo local: edita environment.ts (no este archivo).
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080'
+  apiUrl: 'https://www.nemiasv.com/api'
 };

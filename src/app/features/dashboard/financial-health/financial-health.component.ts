@@ -127,7 +127,7 @@ export class FinancialHealthComponent {
     this.error.set(null);
 
     this.http
-      .get<FinancialHealthData>(`${environment.apiUrl}/api/dashboard/health?year=${year}&month=${month}`)
+      .get<FinancialHealthData>(`${environment.apiUrl}/dashboard/health?year=${year}&month=${month}`)
       .subscribe({
         next: d => {
           this.data.set(d);

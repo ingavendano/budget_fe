@@ -102,7 +102,7 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     this.loading.set(true);
     this.error.set(null);
 
-    const url = `${environment.apiUrl}/api/dashboard/cashflow?year=${year}&month=${month}`;
+    const url = `${environment.apiUrl}/dashboard/cashflow?year=${year}&month=${month}`;
     console.log('[CashflowChart] Requesting URL:', url);
 
     this.http.get<DailyPoint[]>(url).subscribe({

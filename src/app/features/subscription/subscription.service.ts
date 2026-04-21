@@ -63,8 +63,8 @@ export interface AdminUser {
 export class SubscriptionService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  private readonly BASE = `${environment.apiUrl}/api/subscriptions`;
-  private readonly ADMIN = `${environment.apiUrl}/api/admin/subscriptions`;
+  private readonly BASE = `${environment.apiUrl}/subscriptions`;
+  private readonly ADMIN = `${environment.apiUrl}/admin/subscriptions`;
   
   currentPlan = computed<MyPlan | null>(() => {
     const user = this.authService.currentUser();
