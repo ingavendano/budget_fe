@@ -8,6 +8,7 @@ export interface UserDTO {
   planExpiration: string | null;
   remainingDays: number | null;
   active: boolean;
+  features: string[];
   onboardingStep: number; // 0 = no iniciado, 5 = completado
   onboardingDismissed: boolean; // true si el usuario eligió "Recordar después"
 }

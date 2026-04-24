@@ -73,8 +73,7 @@ export class SubscriptionService {
       planType: user.planType as any,
       planExpiration: user.planExpiration?.toString() || null,
       remainingDays: user.remainingDays,
-      // For categories, we might still need to fetch details or just assume defaults
-      // But usually, currentPlan is used for display and the guard.
+      features: user.features || [],
     };
   });
 
